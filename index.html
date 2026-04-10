@@ -726,8 +726,14 @@ function checkScoringEvents() {
       const curr = p.live.r2;
       if (prevScores[key] !== undefined) {
         const delta = curr - prevScores[key]; // negative = score improved
-        if (delta <= -1) {
-          const label = delta === -1 ? "Birdie" : delta === -2 ? "Eagle" : "Albatross";
+        if (delta !== 0) {
+          let label;
+          if (delta <= -3) label = "Albatross";
+          else if (delta === -2) label = "Eagle";
+          else if (delta === -1) label = "Birdie";
+          else if (delta === 1) label = "Bogey";
+          else if (delta === 2) label = "Double Bogey";
+          else label = "+" + delta;
           const thru = p.live.thru;
           const holeStr = thru ? " at " + thru : "";
           scoringEvents.unshift(`${p.name} ${label}${holeStr}`);
