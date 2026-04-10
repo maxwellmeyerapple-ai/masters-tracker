@@ -686,7 +686,11 @@ const GROUPS = [
 
 // ── Name matching ──
 function normName(s) {
-  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  return s.toLowerCase()
+    .replace(/ø/g,"o").replace(/æ/g,"ae").replace(/å/g,"a")
+    .replace(/ö/g,"o").replace(/ä/g,"a").replace(/ü/g,"u")
+    .replace(/ñ/g,"n").replace(/ß/g,"ss").replace(/þ/g,"th")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
     .replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim();
 }
 const playerLookup = {};
