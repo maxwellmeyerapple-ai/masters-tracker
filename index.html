@@ -364,6 +364,39 @@
     letter-spacing: 0.2px;
   }
 
+  .player-name-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .prob-bar-wrap {
+    height: 4px;
+    background: #e0dbd0;
+    border-radius: 2px;
+    overflow: hidden;
+    width: 100%;
+  }
+  .prob-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .prob-bar.pct-high { background: var(--active-green); }
+  .prob-bar.pct-mid  { background: var(--gold); }
+  .prob-bar.pct-low  { background: #bbb; }
+
+  .pct-cell {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .pct-cell.pct-high { color: var(--active-green); }
+  .pct-cell.pct-mid  { color: #9a7c20; }
+  .pct-cell.pct-low  { color: var(--grey-mid); }
+
   /* ── Error / Loading ── */
   #error-banner {
     display: none;
@@ -786,6 +819,71 @@ function scoreCls(s) {
   return s<0?"under":s>0?"over":"even";
 }
 
+// ── Win probability engine ──
+function boxMuller() {
+  // Box-Muller transform: returns standard normal sample
+  let u, v;
+  do { u = Math.random(); } while (u === 0);
+  v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function impliedProb(odds) {
+  if (!odds || odds === "—") return null;
+  const n = Number(odds.replace("+",""));
+  return odds.startsWith("-") ? Math.abs(n)/(Math.abs(n)+100) : 100/(n+100);
+}
+
+function calcWinProbs(players) {
+  // Step 1: odds-based prior (remove vig, normalize)
+  const raw = players.map(p => impliedProb(p.odds));
+  const rawSum = raw.reduce((a,b) => a+(b||0), 0);
+  const oddsProb = rawSum > 0
+    ? raw.map(p => p !== null ? p/rawSum : 1/(players.length))
+    : players.map(() => 1/players.length);
+
+  // Step 2: check live data
+  const scores = players.map(p => (p.live && p.live.r2 !== null) ? p.live.r2 : null);
+  const thruArr = players.map(p => p.live?.thru ?? 0);
+  const maxThru = Math.max(...thruArr);
+
+  if (maxThru === 0) return oddsProb; // no live data yet — return odds
+
+  // Step 3: if all finished, deterministic
+  const remaining = 18 - maxThru;
+  if (remaining <= 0) {
+    const valid = scores.filter(s => s !== null);
+    if (!valid.length) return oddsProb;
+    const minScore = Math.min(...valid);
+    const winCount = scores.filter(s => s === minScore).length;
+    return scores.map(s => s === null ? 0 : s === minScore ? 1/winCount : 0);
+  }
+
+  // Step 4: Monte Carlo — model remaining holes as normal noise
+  // PGA tour: ~1.15 strokes std dev per hole (empirical)
+  const sigma = 1.15 * Math.sqrt(remaining);
+  const N = 3000;
+  const wins = players.map(() => 0);
+
+  for (let sim = 0; sim < N; sim++) {
+    const finalScores = scores.map((s, i) => {
+      const base = s !== null ? s : (oddsProb[i] < 0.5 ? 1 : -1); // rough prior if no score
+      return base + boxMuller() * sigma;
+    });
+    const minF = Math.min(...finalScores);
+    const minCount = finalScores.filter(s => Math.abs(s - minF) < 0.0001).length;
+    finalScores.forEach((s, i) => {
+      if (Math.abs(s - minF) < 0.0001) wins[i] += 1/minCount;
+    });
+  }
+
+  const scoreProb = wins.map(w => w / N);
+
+  // Step 5: blend — weight shifts from odds → live score as round progresses
+  const blend = Math.min(maxThru / 18, 1);
+  return players.map((p, i) => (1 - blend) * oddsProb[i] + blend * scoreProb[i]);
+}
+
 function groupState(g) {
   if (!g.players.some(p=>p.live)) return "upcoming";
   const states = g.players.map(p=>p.live?.state||"pre");
@@ -818,6 +916,8 @@ function updateUI() {
     const badgeCls = state==="active"?"badge-active":state==="complete"?"badge-complete":"badge-upcoming";
     const badgeTxt = state==="active"?"LIVE":state==="complete"?"FINAL":"Upcoming";
 
+    const winProbs = calcWinProbs(group.players);
+
     let html = `
       <div class="card-header">
         <span class="card-tee">${group.teetime}</span>
@@ -827,7 +927,7 @@ function updateUI() {
         <div class="col-hdr">Player</div>
         <div class="col-hdr">Today</div>
         <div class="col-hdr">Thru</div>
-        <div class="col-hdr">Odds</div>
+        <div class="col-hdr">Win%</div>
       </div>`;
 
     group.players.forEach((p,i) => {
@@ -838,15 +938,22 @@ function updateUI() {
       const r2     = hasL?p.live.r2:null;
       const thru   = hasL?p.live.thru:null;
       const thruTxt= hasL?(thru>=18?"F":thru>0?thru:"—"):"—";
+      const pct    = Math.round(winProbs[i] * 100);
+      const pctCls = pct >= 60 ? "pct-high" : pct >= 35 ? "pct-mid" : "pct-low";
       html += `
         <div class="player-row ${rowCls}">
           <div class="player-info">
             <span class="lead-bar ${barCls}"></span>
-            <span class="player-name">${p.name}</span>
+            <div class="player-name-wrap">
+              <span class="player-name">${p.name}</span>
+              <div class="prob-bar-wrap">
+                <div class="prob-bar ${pctCls}" style="width:${pct}%"></div>
+              </div>
+            </div>
           </div>
           <div class="score-cell ${scoreCls(r2)}">${fmtScore(r2)}</div>
           <div class="thru-cell">${thruTxt}</div>
-          <div class="odds-cell">${p.odds||"—"}</div>
+          <div class="pct-cell ${pctCls}">${pct}%</div>
         </div>`;
     });
 
