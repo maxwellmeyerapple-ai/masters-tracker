@@ -832,20 +832,32 @@ function parseESPN(data) {
   try {
     const comps = (data.events?.[0]||data).competitions?.[0]?.competitors||[];
     comps.forEach(c => {
-      const name = c.athlete?.displayName||"";
+      const name  = c.athlete?.displayName||"";
       if (!name) return;
-      const ls    = c.linescores||[];
-      const r2    = ls.find(x=>x.period===2||x.period==="2")||ls[1];
-      // Use displayValue ("-3", "+1", "E", "-") — more reliable than raw value
-      const disp  = r2?.displayValue ?? null;
-      let val = null;
-      if (disp && disp !== "-") {
-        if (disp === "E") val = 0;
-        else val = parseInt(disp, 10);
-      }
-      const thru  = c.status?.thru ?? null;
       const state = c.status?.type?.state||"pre";
-      const e     = findPlayer(name);
+      const thru  = c.status?.thru ?? null;
+
+      // todayDetail = "+1(4)" or "E(9)" or "-3(18)" — score(holes played)
+      const today = c.status?.todayDetail ?? c.status?.detail ?? null;
+      let val = null;
+      if (today && today !== "-") {
+        const m = today.match(/^([+-]?\d+|E)\((\d+)\)/);
+        if (m) {
+          val = m[1] === "E" ? 0 : parseInt(m[1], 10);
+        }
+      }
+
+      // Fallback: R2 linescore displayValue
+      if (val === null) {
+        const ls   = c.linescores||[];
+        const r2   = ls.find(x=>x.period===2||x.period==="2")||ls[1];
+        const disp = r2?.displayValue ?? null;
+        if (disp && disp !== "-") {
+          val = disp === "E" ? 0 : parseInt(disp, 10);
+        }
+      }
+
+      const e = findPlayer(name);
       if (e) e.group.players[e.idx].live = {
         r2: (val !== null && !isNaN(val)) ? val : null,
         thru: thru !== null ? Number(thru) : null,
