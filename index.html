@@ -834,15 +834,22 @@ function parseESPN(data) {
     comps.forEach(c => {
       const name = c.athlete?.displayName||"";
       if (!name) return;
-      const ls   = c.linescores||[];
-      const r2   = ls.find(x=>x.period===2||x.period==="2")||ls[1];
-      const val  = r2 ? Number(r2.value??r2.score??NaN) : null;
-      const thru = c.status?.thruHole ?? null;
-      const state= c.status?.type?.state||"pre";
-      const e    = findPlayer(name);
+      const ls    = c.linescores||[];
+      const r2    = ls.find(x=>x.period===2||x.period==="2")||ls[1];
+      // Use displayValue ("-3", "+1", "E", "-") — more reliable than raw value
+      const disp  = r2?.displayValue ?? null;
+      let val = null;
+      if (disp && disp !== "-") {
+        if (disp === "E") val = 0;
+        else val = parseInt(disp, 10);
+      }
+      // thruHole comes back null from ESPN bulk feed; use outScore holes as proxy if available
+      const thru  = c.status?.thruHole ?? r2?.outScore ?? null;
+      const state = c.status?.type?.state||"pre";
+      const e     = findPlayer(name);
       if (e) e.group.players[e.idx].live = {
-        r2: isNaN(val)?null:val,
-        thru: thru!==null?Number(thru):null,
+        r2: (val !== null && !isNaN(val)) ? val : null,
+        thru: thru !== null ? Number(thru) : null,
         state
       };
     });
