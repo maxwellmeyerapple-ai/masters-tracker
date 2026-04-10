@@ -695,10 +695,26 @@ GROUPS.forEach(g => g.players.forEach((p,i) => {
 }));
 function findPlayer(name) {
   const norm = normName(name);
+  // 1. Exact match
   if (playerLookup[norm]) return playerLookup[norm];
-  const last = norm.split(" ").pop();
-  const key  = Object.keys(playerLookup).find(k => k.split(" ").pop() === last);
-  return key ? playerLookup[key] : null;
+  // 2. Last name exact match
+  const parts = norm.split(" ");
+  const last = parts[parts.length - 1];
+  const byLast = Object.keys(playerLookup).find(k => k.split(" ").pop() === last);
+  if (byLast) return playerLookup[byLast];
+  // 3. First name + last name contained anywhere (handles "T. McKibbin" or "McKibbin, Tom")
+  const first = parts[0];
+  const byFirstLast = Object.keys(playerLookup).find(k => {
+    const kp = k.split(" ");
+    return kp[kp.length-1] === last || (kp[0] === first && kp[kp.length-1].startsWith(last.slice(0,4)));
+  });
+  if (byFirstLast) return playerLookup[byFirstLast];
+  // 4. Partial last name (>=5 chars) — catches McKibbin vs McKibbin-Smith etc.
+  if (last.length >= 5) {
+    const byPartial = Object.keys(playerLookup).find(k => k.split(" ").pop().startsWith(last.slice(0,5)));
+    if (byPartial) return playerLookup[byPartial];
+  }
+  return null;
 }
 
 // ── Live birdie/eagle ticker ──
