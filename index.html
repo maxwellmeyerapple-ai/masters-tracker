@@ -3,317 +3,390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masters 2026 — 3-Ball Live Tracker</title>
+<title>Masters 2026 - 3 Ball Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green-dark:  #1a4731;
-    --green-mid:   #2d6a4f;
-    --green-light: #e8f5e9;
-    --gold:        #c9a84c;
-    --gold-light:  #fff8e7;
-    --gold-dark:   #9a7d3a;
-    --red:         #c62828;
-    --red-light:   #fdecea;
-    --blue:        #1565c0;
-    --grey-dark:   #333;
-    --grey-mid:    #666;
-    --grey-light:  #f5f5f5;
-    --white:       #fff;
-    --card-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    --green:       #1a6b3c;
+    --green-mid:   #2d9458;
+    --green-light: #d4edda;
+    --azalea:      #f72585;
+    --azalea-light:#fce4ec;
+    --gold:        #f9c74f;
+    --gold-dark:   #c9922a;
+    --cream:       #fffdf0;
+    --card-bg:     #ffffff;
+    --red:         #e63946;
+    --blue:        #1d6fa4;
+    --grey:        #555;
+    --shadow:      4px 4px 0px rgba(0,0,0,0.15);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    background: #f0f4f0;
-    color: var(--grey-dark);
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(247,37,133,0.06) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(26,107,60,0.08) 0%, transparent 40%);
     min-height: 100vh;
+    color: #333;
   }
+
+  /* ── Azalea SVG inline ── */
+  .azalea {
+    display: inline-block;
+    width: 52px; height: 52px;
+    flex-shrink: 0;
+  }
+  .azalea-sm { width: 32px; height: 32px; }
 
   /* ── Header ── */
   header {
-    background: var(--green-dark);
-    color: white;
+    background: linear-gradient(160deg, #1a5c35 0%, #2d9458 60%, #1a5c35 100%);
+    padding: 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 0px var(--gold), 0 6px 16px rgba(0,0,0,0.25);
   }
-  .header-top {
+
+  .header-main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px 8px;
-    border-bottom: 3px solid var(--gold);
+    padding: 10px 20px;
     gap: 12px;
     flex-wrap: wrap;
   }
-  .header-title { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-  .header-sub   { font-size: 11px; color: #aaa; margin-top: 2px; }
-  .header-right { text-align: right; flex-shrink: 0; }
-  .refresh-btn {
-    background: var(--gold);
-    color: var(--green-dark);
-    border: none;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 12px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-  }
-  .refresh-btn:hover { background: #e0bc60; }
-  .last-update { font-size: 10px; color: #aaa; margin-top: 4px; }
-  #countdown { color: var(--gold); font-weight: 600; }
 
-  .header-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 20px;
-    flex-wrap: wrap;
-  }
-  .filter-label { font-size: 11px; color: #aaa; margin-right: 2px; }
-  .filter-btn {
-    background: rgba(255,255,255,0.1);
-    color: #ccc;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 4px 12px;
-    border-radius: 14px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-btn.active {
-    background: var(--gold);
-    color: var(--green-dark);
-    border-color: var(--gold);
-    font-weight: 700;
-  }
-
-  /* ── Parlay Banner ── */
-  .parlay-banner {
-    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-    color: var(--green-dark);
-    padding: 9px 20px;
+  .header-left {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
   }
-  .parlay-label {
-    font-weight: 800;
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    white-space: nowrap;
+
+  .header-titles { line-height: 1.2; }
+
+  .title-main {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
   }
-  .parlay-picks { display: flex; gap: 6px; flex-wrap: wrap; }
-  .parlay-chip {
-    background: var(--green-dark);
-    color: white;
-    padding: 3px 10px;
-    border-radius: 12px;
+
+  .title-sub {
     font-size: 11px;
+    color: rgba(255,255,255,0.75);
     font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .refresh-btn {
+    font-family: 'Fredoka One', cursive;
+    background: var(--gold);
+    color: var(--green);
+    border: none;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+    transition: transform 0.1s, box-shadow 0.1s;
+    letter-spacing: 0.3px;
+  }
+  .refresh-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+
+  .timer-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+  }
+  #countdown { color: var(--gold); font-weight: 800; }
+
+  /* ── Fun facts ticker ── */
+  .fun-bar {
+    background: var(--azalea);
+    color: white;
+    padding: 5px 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
+    overflow: hidden;
     white-space: nowrap;
   }
-  .parlay-chip .p-odds { color: var(--gold); font-size: 10px; }
-  .parlay-chip .p-r2   { font-weight: 700; }
-  .p-r2.under { color: #81c784; }
-  .p-r2.over  { color: #ef9a9a; }
-  .p-r2.even  { color: #ccc; }
+  .fun-bar-label {
+    background: white;
+    color: var(--azalea);
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 800;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .fun-ticker {
+    display: inline-flex;
+    gap: 40px;
+    animation: ticker 30s linear infinite;
+  }
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .fun-ticker span::before { content: "· "; }
 
-  /* ── Main ── */
-  main {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 14px 16px;
+  /* ── Filters ── */
+  .filter-bar {
+    background: white;
+    border-bottom: 2px solid var(--green-light);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 108px;
+    z-index: 90;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--grey);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filter-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    background: var(--cream);
+    color: var(--grey);
+    border: 2px solid #ddd;
+    padding: 4px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn.active {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
   }
 
+  /* ── Status bar ── */
   .status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 0 12px;
+    padding: 8px 16px 4px;
     font-size: 12px;
-    color: var(--grey-mid);
+    color: var(--grey);
+    font-weight: 600;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
   }
-  .status-left { display: flex; align-items: center; gap: 6px; }
   .status-dot {
-    width: 8px; height: 8px;
+    width: 9px; height: 9px;
     border-radius: 50%;
-    background: #ccc;
-    flex-shrink: 0;
+    background: #bbb;
+    display: inline-block;
+    margin-right: 5px;
   }
   .status-dot.live { background: #4caf50; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── Main grid ── */
+  main { max-width: 1300px; margin: 0 auto; padding: 12px 14px 40px; }
 
   .groups-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
   }
 
-  /* ── Card ── */
+  /* ── Cards ── */
   .group-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: var(--card-shadow);
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
     overflow: hidden;
+    border: 2.5px solid #e0e0e0;
     transition: transform 0.15s, box-shadow 0.15s;
-    border: 2px solid transparent;
   }
-  .group-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-  .group-card.parlay-card { border-color: var(--gold); }
-  .group-card.active-now  { border-color: #4caf50; }
-  .group-card.hidden      { display: none; }
+  .group-card:hover {
+    transform: translateY(-3px) rotate(-0.3deg);
+    box-shadow: 6px 6px 0px rgba(0,0,0,0.12);
+  }
+  .group-card.active-now  {
+    border-color: #4caf50;
+    box-shadow: 4px 4px 0px rgba(76,175,80,0.3);
+  }
+  .group-card.hidden { display: none; }
 
+  /* Alternating card header colors */
   .card-header {
-    background: var(--green-dark);
-    color: white;
-    padding: 7px 12px;
+    padding: 8px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: white;
   }
-  .card-tee   { font-size: 12px; font-weight: 600; }
-  .card-badge {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 600;
+  .group-card:nth-child(6n+1) .card-header { background: var(--green); }
+  .group-card:nth-child(6n+2) .card-header { background: #1d6fa4; }
+  .group-card:nth-child(6n+3) .card-header { background: #7b2d8b; }
+  .group-card:nth-child(6n+4) .card-header { background: #c05621; }
+  .group-card:nth-child(6n+5) .card-header { background: #b5272c; }
+  .group-card:nth-child(6n+6) .card-header { background: #2d6a8a; }
+
+  .card-tee {
+    font-family: 'Fredoka One', cursive;
+    font-size: 15px;
     letter-spacing: 0.3px;
   }
-  .badge-upcoming { background: rgba(255,255,255,0.12); color: #bbb; }
-  .badge-active   { background: #4caf50; color: white; }
-  .badge-complete { background: var(--gold); color: var(--green-dark); }
+  .card-badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 9px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-upcoming  { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+  .badge-active    { background: #4caf50; color: white; }
+  .badge-complete  { background: var(--gold); color: var(--green); }
 
   .col-headers {
     display: grid;
-    grid-template-columns: 1fr 50px 50px 52px;
-    padding: 4px 12px;
-    background: #f8f8f8;
+    grid-template-columns: 1fr 48px 46px 52px;
+    padding: 4px 14px;
+    background: #f9f9f9;
     border-bottom: 1px solid #eee;
   }
   .col-hdr {
     font-size: 9px;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--grey-mid);
+    letter-spacing: 0.6px;
+    color: #999;
     text-align: center;
   }
   .col-hdr:first-child { text-align: left; }
 
   .player-row {
     display: grid;
-    grid-template-columns: 1fr 50px 50px 52px;
+    grid-template-columns: 1fr 48px 46px 52px;
     align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 9px 14px;
+    border-bottom: 1px dashed #f0f0f0;
     transition: background 0.2s;
   }
   .player-row:last-child { border-bottom: none; }
-  .player-row.winning { background: #e8f5e9; }
+  .player-row.winning { background: #f0fdf4; }
   .player-row.losing  { background: #fafafa; }
-  .player-row.tied    { background: #fff8e7; }
+  .player-row.tied    { background: #fffbeb; }
 
   .player-info { display: flex; align-items: center; gap: 8px; }
 
-  /* winning indicator — CSS only, no emoji */
   .lead-indicator {
-    width: 10px; height: 10px;
+    width: 11px; height: 11px;
     border-radius: 50%;
     flex-shrink: 0;
+    border: 2px solid transparent;
   }
-  .lead-indicator.win  { background: #4caf50; }
-  .lead-indicator.lose { background: #ef5350; }
-  .lead-indicator.tie  { background: var(--gold); }
-  .lead-indicator.none { background: transparent; }
+  .lead-indicator.win  { background: #4caf50; border-color: #2e7d32; }
+  .lead-indicator.lose { background: #ef5350; border-color: #c62828; }
+  .lead-indicator.tie  { background: var(--gold); border-color: var(--gold-dark); }
+  .lead-indicator.none { background: #e0e0e0; border-color: #ccc; }
 
   .player-name {
     font-size: 13px;
-    font-weight: 500;
-    line-height: 1.3;
-  }
-  .parlay-name { font-weight: 700; }
-
-  .parlay-tag {
-    background: var(--gold);
-    color: var(--green-dark);
-    font-size: 8px;
-    font-weight: 800;
-    padding: 1px 5px;
-    border-radius: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
+    font-weight: 700;
+    line-height: 1.2;
   }
 
   .score-cell {
     text-align: center;
-    font-size: 14px;
-    font-weight: 700;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
   }
-  .score-cell.under { color: #c62828; }
-  .score-cell.over  { color: #1565c0; }
-  .score-cell.even  { color: var(--grey-dark); }
+  .score-cell.under { color: var(--red); }
+  .score-cell.over  { color: var(--blue); }
+  .score-cell.even  { color: #333; }
 
   .thru-cell {
     text-align: center;
     font-size: 11px;
-    color: var(--grey-mid);
-    font-weight: 500;
+    color: #999;
+    font-weight: 700;
   }
   .odds-cell {
     text-align: center;
     font-size: 11px;
-    color: var(--grey-mid);
+    color: #777;
+    font-weight: 600;
   }
 
+  /* ── Error / Loading ── */
   #error-banner {
     display: none;
-    background: #fff3e0;
-    color: #e65100;
-    border: 1px solid #ffb74d;
-    border-radius: 6px;
+    background: var(--azalea-light);
+    color: var(--azalea);
+    border: 2px solid var(--azalea);
+    border-radius: 12px;
     padding: 8px 14px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-size: 12px;
+    font-weight: 700;
   }
 
-  /* ── Loading ── */
   #loading-overlay {
     position: fixed; inset: 0;
-    background: rgba(26,71,49,0.88);
+    background: rgba(26,92,53,0.9);
     display: flex; align-items: center; justify-content: center;
-    z-index: 200;
-    color: white;
-    font-size: 16px;
-    flex-direction: column;
-    gap: 14px;
+    z-index: 200; flex-direction: column; gap: 16px; color: white;
   }
+  .loader-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--gold);
+  }
+  .loader-sub { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 600; }
   .spinner {
-    width: 34px; height: 34px;
-    border: 3px solid rgba(255,255,255,0.2);
+    width: 40px; height: 40px;
+    border: 4px solid rgba(255,255,255,0.2);
     border-top-color: var(--gold);
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 0.9s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
   /* ── Mobile ── */
-  @media (max-width: 540px) {
+  @media (max-width: 500px) {
     .groups-grid { grid-template-columns: 1fr; }
-    .header-title { font-size: 15px; }
-    .parlay-banner { padding: 8px 14px; }
+    .title-main  { font-size: 18px; }
+    .fun-bar     { font-size: 10.5px; }
   }
 </style>
 </head>
@@ -321,40 +394,88 @@
 
 <div id="loading-overlay">
   <div class="spinner"></div>
-  <div>Loading live scores...</div>
+  <div class="loader-text">Heading to Augusta...</div>
+  <div class="loader-sub">Loading live scores from the course</div>
 </div>
 
+<!-- ── AZALEA SVG TEMPLATE ── -->
+<svg style="display:none">
+  <symbol id="azalea-icon" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9"/>
+    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(72 50 50)"/>
+    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(144 50 50)"/>
+    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(216 50 50)"/>
+    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(288 50 50)"/>
+    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6"/>
+    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(72 50 50)"/>
+    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(144 50 50)"/>
+    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(216 50 50)"/>
+    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(288 50 50)"/>
+    <circle cx="50" cy="50" r="11" fill="#f9c74f"/>
+    <circle cx="50" cy="50" r="6"  fill="#f4a21f"/>
+  </symbol>
+  <symbol id="sandwich-icon" viewBox="0 0 100 100">
+    <!-- bread top -->
+    <ellipse cx="50" cy="28" rx="38" ry="14" fill="#e8a854"/>
+    <ellipse cx="50" cy="22" rx="38" ry="10" fill="#f5c26b"/>
+    <!-- filling -->
+    <rect x="14" y="38" width="72" height="10" rx="4" fill="#e05c3a"/>
+    <rect x="14" y="46" width="72" height="6" rx="3" fill="#c0392b"/>
+    <!-- bread bottom -->
+    <ellipse cx="50" cy="58" rx="38" ry="12" fill="#e8a854"/>
+    <ellipse cx="50" cy="62" rx="38" ry="8" fill="#d4913c"/>
+  </symbol>
+</svg>
+
 <header>
-  <div class="header-top">
-    <div>
-      <div class="header-title">Masters 2026 — Round 2 Three-Ball Tracker</div>
-      <div class="header-sub">Augusta National  |  Friday April 10, 2026</div>
+  <div class="header-main">
+    <div class="header-left">
+      <svg class="azalea" aria-hidden="true"><use href="#azalea-icon"/></svg>
+      <div class="header-titles">
+        <div class="title-main">Masters 2026 — 3-Ball Tracker</div>
+        <div class="title-sub">Augusta National Golf Club &nbsp;·&nbsp; Round 2 &nbsp;·&nbsp; Friday April 10</div>
+      </div>
+      <svg class="azalea" aria-hidden="true"><use href="#azalea-icon"/></svg>
     </div>
     <div class="header-right">
-      <button class="refresh-btn" onclick="fetchScores()">Refresh</button>
-      <div class="last-update">
-        Updated: <span id="update-time">—</span> &nbsp;|&nbsp; Next: <span id="countdown">—</span>
-      </div>
+      <button class="refresh-btn" onclick="fetchScores()">Refresh Scores</button>
+      <div class="timer-text">Updated: <span id="update-time">—</span> &nbsp;|&nbsp; Next: <span id="countdown">—</span></div>
     </div>
   </div>
-  <div class="header-controls">
-    <span class="filter-label">FILTER:</span>
-    <button class="filter-btn active" onclick="setFilter('all',this)">All Groups</button>
-    <button class="filter-btn" onclick="setFilter('active',this)">Active Now</button>
-    <button class="filter-btn" onclick="setFilter('complete',this)">Completed</button>
-    <button class="filter-btn" onclick="setFilter('parlay',this)">Parlay Groups</button>
+
+  <div class="fun-bar">
+    <span class="fun-bar-label">Augusta</span>
+    <div class="fun-ticker">
+      <span>Azaleas in full bloom at Amen Corner</span>
+      <span>Pimento Cheese Sandwich · $1.50</span>
+      <span>Masters tradition since 1934</span>
+      <span>Egg Salad Sandwich · $1.50</span>
+      <span>Par 72 · 7,510 yards</span>
+      <span>Ike's Pond on the Par 3 course</span>
+      <span>The famous Butler Cabin green jacket ceremony</span>
+      <span>Azaleas in full bloom at Amen Corner</span>
+      <span>Pimento Cheese Sandwich · $1.50</span>
+      <span>Masters tradition since 1934</span>
+      <span>Egg Salad Sandwich · $1.50</span>
+      <span>Par 72 · 7,510 yards</span>
+      <span>Ike's Pond on the Par 3 course</span>
+      <span>The famous Butler Cabin green jacket ceremony</span>
+    </div>
   </div>
 </header>
 
-<div class="parlay-banner">
-  <div class="parlay-label">Parlay 5</div>
-  <div class="parlay-picks" id="parlay-chips"></div>
+<div class="filter-bar">
+  <span class="filter-label">Show:</span>
+  <button class="filter-btn active" onclick="setFilter('all',this)">All Groups</button>
+  <button class="filter-btn" onclick="setFilter('active',this)">Active Now</button>
+  <button class="filter-btn" onclick="setFilter('complete',this)">Completed</button>
+  <button class="filter-btn" onclick="setFilter('upcoming',this)">Upcoming</button>
 </div>
 
 <main>
   <div id="error-banner"></div>
   <div class="status-bar">
-    <div class="status-left">
+    <div>
       <span class="status-dot" id="status-dot"></span>
       <span id="status-text">Loading...</span>
     </div>
@@ -363,266 +484,284 @@
   <div class="groups-grid" id="groups-grid"></div>
 </main>
 
+<footer>
+  <svg class="azalea-sm" aria-hidden="true" style="vertical-align:middle"><use href="#azalea-icon"/></svg>
+  &nbsp; Masters 2026 &nbsp;·&nbsp; Live scores via ESPN &nbsp;·&nbsp; Refreshes every 60s &nbsp;
+  <svg class="azalea-sm" aria-hidden="true" style="vertical-align:middle"><use href="#azalea-icon"/></svg>
+  <br><br>
+  <svg width="28" height="20" viewBox="0 0 100 70" style="vertical-align:middle;opacity:0.4">
+    <use href="#sandwich-icon" width="100" height="100" y="-15"/>
+  </svg>
+  &nbsp;Don't forget your pimento cheese sandwich&nbsp;
+  <svg width="28" height="20" viewBox="0 0 100 70" style="vertical-align:middle;opacity:0.4">
+    <use href="#sandwich-icon" width="100" height="100" y="-15"/>
+  </svg>
+</footer>
+
 <script>
 // ═══════════════════════════════════════════════════════════════════════════
 // GROUP DATA
 // ═══════════════════════════════════════════════════════════════════════════
 const GROUPS = [
   { teetime:"7:40 AM", id:"g1", players:[
-    {name:"Sam Stevens",   r1:0,  odds:null,   parlay:false},
-    {name:"Sungjae Im",    r1:+4, odds:null,   parlay:false},
+    {name:"Sam Stevens",   r1:0,  odds:null},
+    {name:"Sungjae Im",    r1:+4, odds:null},
   ]},
   { teetime:"7:50 AM", id:"g2", players:[
-    {name:"Brian Campbell", r1:-1, odds:"+290", parlay:false},
-    {name:"Andrew Novak",   r1:+3, odds:"+135", parlay:false},
-    {name:"Tom McKibbin",   r1:+3, odds:"+160", parlay:false},
+    {name:"Brian Campbell", r1:-1, odds:"+290"},
+    {name:"Andrew Novak",   r1:+3, odds:"+135"},
+    {name:"Tom McKibbin",   r1:+3, odds:"+160"},
   ]},
   { teetime:"8:02 AM", id:"g3", players:[
-    {name:"Wyndham Clark",  r1:0,  odds:null,   parlay:false},
-    {name:"Mike Weir",      r1:+9, odds:null,   parlay:false},
-    {name:"Mateo Pulcini",  r1:+9, odds:null,   parlay:false},
+    {name:"Wyndham Clark",  r1:0,  odds:null},
+    {name:"Mike Weir",      r1:+9, odds:null},
+    {name:"Mateo Pulcini",  r1:+9, odds:null},
   ]},
   { teetime:"8:14 AM", id:"g4", players:[
-    {name:"Zach Johnson",     r1:+3, odds:"+250", parlay:false},
-    {name:"Michael Kim",      r1:+3, odds:"+220", parlay:false},
-    {name:"Nicolai Hojgaard", r1:+4, odds:"+110", parlay:false},
+    {name:"Zach Johnson",     r1:+3, odds:"+250"},
+    {name:"Michael Kim",      r1:+3, odds:"+220"},
+    {name:"Nicolai Hojgaard", r1:+4, odds:"+110"},
   ]},
   { teetime:"8:26 AM", id:"g5", players:[
-    {name:"Ethan Fang",    r1:+2,  odds:null, parlay:false},
-    {name:"Danny Willett", r1:+4,  odds:null, parlay:false},
-    {name:"Davis Riley",   r1:+10, odds:null, parlay:false},
+    {name:"Ethan Fang",    r1:+2,  odds:null},
+    {name:"Danny Willett", r1:+4,  odds:null},
+    {name:"Davis Riley",   r1:+10, odds:null},
   ]},
   { teetime:"8:38 AM", id:"g6", players:[
-    {name:"Adam Scott",    r1:0,  odds:"+135", parlay:false},
-    {name:"Daniel Berger", r1:+4, odds:"+220", parlay:false},
-    {name:"Brian Harman",  r1:+7, odds:"+210", parlay:false},
+    {name:"Adam Scott",    r1:0,  odds:"+135"},
+    {name:"Daniel Berger", r1:+4, odds:"+220"},
+    {name:"Brian Harman",  r1:+7, odds:"+210"},
   ]},
   { teetime:"8:50 AM", id:"g7", players:[
-    {name:"Fred Couples",   r1:+6, odds:null, parlay:false},
-    {name:"Min Woo Lee",    r1:+6, odds:null, parlay:false},
-    {name:"Fifa Laopakdee", r1:+8, odds:null, parlay:false},
+    {name:"Fred Couples",   r1:+6, odds:null},
+    {name:"Min Woo Lee",    r1:+6, odds:null},
+    {name:"Fifa Laopakdee", r1:+8, odds:null},
   ]},
   { teetime:"9:02 AM", id:"g8", players:[
-    {name:"Aaron Rai",       r1:-1, odds:"+210", parlay:false},
-    {name:"Jacob Bridgeman", r1:-1, odds:"+125", parlay:false},
-    {name:"Sergio Garcia",   r1:0,  odds:"+240", parlay:false},
+    {name:"Aaron Rai",       r1:-1, odds:"+210"},
+    {name:"Jacob Bridgeman", r1:-1, odds:"+125"},
+    {name:"Sergio Garcia",   r1:0,  odds:"+240"},
   ]},
   { teetime:"9:19 AM", id:"g9", players:[
-    {name:"Michael Brennan", r1:0,  odds:"+240", parlay:false},
-    {name:"Harry Hall",      r1:+5, odds:"+180", parlay:false},
-    {name:"Corey Conners",   r1:+3, odds:"+145", parlay:false},
+    {name:"Michael Brennan", r1:0,  odds:"+240"},
+    {name:"Harry Hall",      r1:+5, odds:"+180"},
+    {name:"Corey Conners",   r1:+3, odds:"+145"},
   ]},
   { teetime:"9:31 AM", id:"g10", players:[
-    {name:"Tyrrell Hatton",   r1:+2, odds:"+180", parlay:false},
-    {name:"J.J. Spaun",       r1:+2, odds:"+180", parlay:false},
-    {name:"Maverick McNealy", r1:+5, odds:"+175", parlay:false},
+    {name:"Tyrrell Hatton",   r1:+2, odds:"+180"},
+    {name:"J.J. Spaun",       r1:+2, odds:"+180"},
+    {name:"Maverick McNealy", r1:+5, odds:"+175"},
   ]},
   { teetime:"9:43 AM", id:"g11", players:[
-    {name:"Ludvig Aberg",   r1:+2, odds:"+165", parlay:true},
-    {name:"Chris Gotterup", r1:0,  odds:"+270", parlay:false},
-    {name:"Jon Rahm",       r1:+6, odds:"+135", parlay:false},
+    {name:"Ludvig Aberg",   r1:+2, odds:"+165"},
+    {name:"Chris Gotterup", r1:0,  odds:"+270"},
+    {name:"Jon Rahm",       r1:+6, odds:"+135"},
   ]},
   { teetime:"9:55 AM", id:"g12", players:[
-    {name:"Justin Rose",   r1:-2, odds:"+165", parlay:false},
-    {name:"Jordan Spieth", r1:0,  odds:"+180", parlay:false},
-    {name:"Brooks Koepka", r1:0,  odds:"+200", parlay:false},
+    {name:"Justin Rose",   r1:-2, odds:"+165"},
+    {name:"Jordan Spieth", r1:0,  odds:"+180"},
+    {name:"Brooks Koepka", r1:0,  odds:"+200"},
   ]},
   { teetime:"10:07 AM", id:"g13", players:[
-    {name:"Justin Thomas", r1:0,  odds:"+175", parlay:false},
-    {name:"Sepp Straka",   r1:+1, odds:"+175", parlay:false},
-    {name:"Ben Griffin",   r1:0,  odds:"+190", parlay:false},
+    {name:"Justin Thomas", r1:0,  odds:"+175"},
+    {name:"Sepp Straka",   r1:+1, odds:"+175"},
+    {name:"Ben Griffin",   r1:0,  odds:"+190"},
   ]},
   { teetime:"10:19 AM", id:"g14", players:[
-    {name:"Gary Woodland",     r1:-1, odds:"+410", parlay:true},
-    {name:"Scottie Scheffler", r1:-2, odds:"-115", parlay:false},
-    {name:"Robert MacIntyre",  r1:+8, odds:"+220", parlay:false},
+    {name:"Gary Woodland",     r1:-1, odds:"+410"},
+    {name:"Scottie Scheffler", r1:-2, odds:"-115"},
+    {name:"Robert MacIntyre",  r1:+8, odds:"+220"},
   ]},
   { teetime:"10:31 AM", id:"g15", players:[
-    {name:"Harris English", r1:+1, odds:"+190", parlay:false},
-    {name:"Si Woo Kim",     r1:+3, odds:"+145", parlay:false},
-    {name:"Marco Penge",    r1:+4, odds:"+220", parlay:false},
+    {name:"Harris English", r1:+1, odds:"+190"},
+    {name:"Si Woo Kim",     r1:+3, odds:"+145"},
+    {name:"Marco Penge",    r1:+4, odds:"+220"},
   ]},
   { teetime:"10:51 AM", id:"g16", players:[
-    {name:"Haotong Li",    r1:-1, odds:null, parlay:false},
-    {name:"Johnny Keefer", r1:+4, odds:null, parlay:false},
+    {name:"Haotong Li",    r1:-1, odds:null},
+    {name:"Johnny Keefer", r1:+4, odds:null},
   ]},
   { teetime:"11:03 AM", id:"g17", players:[
-    {name:"Max Homa",       r1:0,   odds:null, parlay:false},
-    {name:"Carlos Ortiz",   r1:+8,  odds:null, parlay:false},
-    {name:"Naoyuki Kataoka",r1:+12, odds:null, parlay:false},
+    {name:"Max Homa",        r1:0,   odds:null},
+    {name:"Carlos Ortiz",    r1:+8,  odds:null},
+    {name:"Naoyuki Kataoka", r1:+12, odds:null},
   ]},
   { teetime:"11:15 AM", id:"g18", players:[
-    {name:"Jose Maria Olazabal",       r1:+2,  odds:null, parlay:false},
-    {name:"Rasmus Neergaard-Petersen", r1:+5,  odds:null, parlay:false},
-    {name:"Aldrich Potgieter",         r1:+12, odds:null, parlay:false},
+    {name:"Jose Maria Olazabal",       r1:+2,  odds:null},
+    {name:"Rasmus Neergaard-Petersen", r1:+5,  odds:null},
+    {name:"Aldrich Potgieter",         r1:+12, odds:null},
   ]},
   { teetime:"11:27 AM", id:"g19", players:[
-    {name:"Jackson Herrington", r1:+4, odds:"+290", parlay:false},
-    {name:"Angel Cabrera",      r1:+7, odds:"+250", parlay:false},
-    {name:"Sami Valimaki",      r1:+8, odds:"-110", parlay:false},
+    {name:"Jackson Herrington", r1:+4, odds:"+290"},
+    {name:"Angel Cabrera",      r1:+7, odds:"+250"},
+    {name:"Sami Valimaki",      r1:+8, odds:"-110"},
   ]},
   { teetime:"11:39 AM", id:"g20", players:[
-    {name:"Charl Schwartzel", r1:+3, odds:"+200", parlay:false},
-    {name:"Ryan Fox",         r1:+5, odds:"+155", parlay:false},
-    {name:"Max Greyserman",   r1:+7, odds:"+190", parlay:false},
+    {name:"Charl Schwartzel", r1:+3, odds:"+200"},
+    {name:"Ryan Fox",         r1:+5, odds:"+155"},
+    {name:"Max Greyserman",   r1:+7, odds:"+190"},
   ]},
   { teetime:"11:51 AM", id:"g21", players:[
-    {name:"Matt McCarty",    r1:0,  odds:"+115", parlay:false},
-    {name:"Rasmus Hojgaard", r1:+6, odds:"+115", parlay:false},
-    {name:"Vijay Singh",     r1:+7, odds:"+550", parlay:false},
+    {name:"Matt McCarty",    r1:0,  odds:"+115"},
+    {name:"Rasmus Hojgaard", r1:+6, odds:"+115"},
+    {name:"Vijay Singh",     r1:+7, odds:"+550"},
   ]},
   { teetime:"12:03 PM", id:"g22", players:[
-    {name:"Kurt Kitayama",     r1:-3, odds:"+145", parlay:true},
-    {name:"Kristoffer Reitan", r1:0,  odds:"+180", parlay:false},
-    {name:"Casey Jarvis",      r1:+5, odds:"+240", parlay:false},
+    {name:"Kurt Kitayama",     r1:-3, odds:"+145"},
+    {name:"Kristoffer Reitan", r1:0,  odds:"+180"},
+    {name:"Casey Jarvis",      r1:+5, odds:"+240"},
   ]},
   { teetime:"12:32 PM", id:"g23", players:[
-    {name:"Sam Burns",     r1:-5, odds:"+170", parlay:true},
-    {name:"Jake Knapp",    r1:+1, odds:"+170", parlay:false},
-    {name:"Cameron Smith", r1:+2, odds:"+220", parlay:false},
+    {name:"Sam Burns",     r1:-5, odds:"+170"},
+    {name:"Jake Knapp",    r1:+1, odds:"+170"},
+    {name:"Cameron Smith", r1:+2, odds:"+220"},
   ]},
   { teetime:"12:44 PM", id:"g24", players:[
-    {name:"Nick Taylor",    r1:-1, odds:"+180", parlay:false},
-    {name:"Keegan Bradley", r1:0,  odds:"+180", parlay:false},
-    {name:"Ryan Gerard",    r1:0,  odds:"+180", parlay:false},
+    {name:"Nick Taylor",    r1:-1, odds:"+180"},
+    {name:"Keegan Bradley", r1:0,  odds:"+180"},
+    {name:"Ryan Gerard",    r1:0,  odds:"+180"},
   ]},
   { teetime:"12:56 PM", id:"g25", players:[
-    {name:"Shane Lowry",    r1:-2, odds:"+145", parlay:false},
-    {name:"Jason Day",      r1:-3, odds:"+145", parlay:false},
-    {name:"Dustin Johnson", r1:+1, odds:"+290", parlay:false},
+    {name:"Shane Lowry",    r1:-2, odds:"+145"},
+    {name:"Jason Day",      r1:-3, odds:"+145"},
+    {name:"Dustin Johnson", r1:+1, odds:"+290"},
   ]},
   { teetime:"1:08 PM", id:"g26", players:[
-    {name:"Patrick Reed",    r1:-3, odds:"+200", parlay:false},
-    {name:"Tommy Fleetwood", r1:-1, odds:"+145", parlay:false},
-    {name:"Akshay Bhatia",   r1:+1, odds:"+220", parlay:false},
+    {name:"Patrick Reed",    r1:-3, odds:"+200"},
+    {name:"Tommy Fleetwood", r1:-1, odds:"+145"},
+    {name:"Akshay Bhatia",   r1:+1, odds:"+220"},
   ]},
   { teetime:"1:20 PM", id:"g27", players:[
-    {name:"Xander Schauffele", r1:-2, odds:"+180", parlay:true},
-    {name:"Matt Fitzpatrick",  r1:+2, odds:"+220", parlay:false},
-    {name:"Bryson DeChambeau", r1:+4, odds:"+155", parlay:false},
+    {name:"Xander Schauffele", r1:-2, odds:"+180"},
+    {name:"Matt Fitzpatrick",  r1:+2, odds:"+220"},
+    {name:"Bryson DeChambeau", r1:+4, odds:"+155"},
   ]},
   { teetime:"1:32 PM", id:"g28", players:[
-    {name:"Russell Henley",   r1:+1, odds:"+190", parlay:false},
-    {name:"Hideki Matsuyama", r1:0,  odds:"+155", parlay:false},
-    {name:"Collin Morikawa",  r1:+2, odds:"+200", parlay:false},
+    {name:"Russell Henley",   r1:+1, odds:"+190"},
+    {name:"Hideki Matsuyama", r1:0,  odds:"+155"},
+    {name:"Collin Morikawa",  r1:+2, odds:"+200"},
   ]},
   { teetime:"1:44 PM", id:"g29", players:[
-    {name:"Rory McIlroy",  r1:-5, odds:null, parlay:false},
-    {name:"Cameron Young", r1:+1, odds:null, parlay:false},
-    {name:"Mason Howell",  r1:+5, odds:null, parlay:false},
+    {name:"Rory McIlroy",  r1:-5, odds:null},
+    {name:"Cameron Young", r1:+1, odds:null},
+    {name:"Mason Howell",  r1:+5, odds:null},
   ]},
   { teetime:"1:56 PM", id:"g30", players:[
-    {name:"Viktor Hovland",  r1:+3, odds:"+145", parlay:false},
-    {name:"Patrick Cantlay", r1:+5, odds:"+165", parlay:false},
-    {name:"Alex Noren",      r1:+5, odds:"+250", parlay:false},
+    {name:"Viktor Hovland",  r1:+3, odds:"+145"},
+    {name:"Patrick Cantlay", r1:+5, odds:"+165"},
+    {name:"Alex Noren",      r1:+5, odds:"+250"},
   ]},
 ];
 
-// ═══════════════════════════════════════════════════════════════════════════
-// NAME MATCHING
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Name matching ──
 function normName(s) {
-  return s.toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z ]/g,"")
-    .replace(/\s+/g," ").trim();
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim();
 }
-
 const playerLookup = {};
-GROUPS.forEach(g => {
-  g.players.forEach((p,i) => {
-    playerLookup[normName(p.name)] = {group:g, idx:i};
-  });
-});
-
-function findPlayer(espnName) {
-  const norm = normName(espnName);
+GROUPS.forEach(g => g.players.forEach((p,i) => {
+  playerLookup[normName(p.name)] = {group:g, idx:i};
+}));
+function findPlayer(name) {
+  const norm = normName(name);
   if (playerLookup[norm]) return playerLookup[norm];
   const last = norm.split(" ").pop();
   const key  = Object.keys(playerLookup).find(k => k.split(" ").pop() === last);
   return key ? playerLookup[key] : null;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// DATA FETCH
-// ═══════════════════════════════════════════════════════════════════════════
-const ESPN_URL     = "https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?event=401811941";
-const MASTERS_URL  = "https://www.masters.com/en_US/scores/feeds/2026/scores.json";
+// ── Data fetch ──
+const ESPN_URL    = "https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?event=401811941";
+const MASTERS_URL = "https://www.masters.com/en_US/scores/feeds/2026/scores.json";
 
+// Fetch from both sources in parallel; merge results (Masters.com wins ties on thru-hole recency)
 async function fetchScores() {
   showLoading(true);
   clearError();
-  let ok = false;
-  try {
-    const r = await fetch(ESPN_URL, {cache:"no-store"});
-    if (!r.ok) throw new Error("ESPN "+r.status);
-    parseESPN(await r.json());
-    ok = true;
-  } catch(e1) {
-    try {
-      const r2 = await fetch(MASTERS_URL, {cache:"no-store"});
-      if (!r2.ok) throw new Error("Masters feed "+r2.status);
-      parseMasters(await r2.json());
-      ok = true;
-    } catch(e2) {
-      showError("Could not reach live scoring feed. Scores will update when connection is restored. Click Refresh to retry.");
-      setStatus("offline");
-    }
+  let espnOk = false, mastersOk = false;
+
+  const [espnResult, mastersResult] = await Promise.allSettled([
+    fetch(ESPN_URL,    {cache:"no-store"}).then(r=>{ if(!r.ok) throw new Error("ESPN "+r.status);    return r.json(); }),
+    fetch(MASTERS_URL, {cache:"no-store"}).then(r=>{ if(!r.ok) throw new Error("Masters "+r.status); return r.json(); })
+  ]);
+
+  // Apply ESPN first (baseline)
+  if (espnResult.status === "fulfilled") {
+    parseESPN(espnResult.value);
+    espnOk = true;
   }
-  if (ok) setStatus("live");
+
+  // Apply Masters.com on top — overwrites player data only if Masters has equal or more holes played
+  if (mastersResult.status === "fulfilled") {
+    parseMasters(mastersResult.value, /*preferIfFresher=*/true);
+    mastersOk = true;
+  }
+
+  const ok = espnOk || mastersOk;
+  if (!ok) {
+    showError("Could not reach live scoring — scores will update when connection is restored.");
+    setStatus("offline");
+  } else {
+    setStatus("live", espnOk, mastersOk);
+  }
+
   updateUI();
   showLoading(false);
-  document.getElementById("update-time").textContent = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+  document.getElementById("update-time").textContent =
+    new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
   resetCountdown();
 }
 
 function parseESPN(data) {
   try {
-    const comps = (data.events?.[0] || data).competitions?.[0]?.competitors || [];
-    comps.forEach(comp => {
-      const name = comp.athlete?.displayName || "";
+    const comps = (data.events?.[0]||data).competitions?.[0]?.competitors||[];
+    comps.forEach(c => {
+      const name = c.athlete?.displayName||"";
       if (!name) return;
-      const ls    = comp.linescores || [];
-      const r2obj = ls.find(x => x.period===2 || x.period==="2") || ls[1];
-      const r2    = r2obj ? Number(r2obj.value ?? r2obj.score ?? NaN) : null;
-      const thru  = comp.status?.thruHole ?? null;
-      const state = comp.status?.type?.state || "pre";
-      const entry = findPlayer(name);
-      if (entry) {
-        entry.group.players[entry.idx].live = {
-          r2: isNaN(r2) ? null : r2,
-          thru: thru !== null ? Number(thru) : null,
-          state
-        };
-      }
+      const ls   = c.linescores||[];
+      const r2   = ls.find(x=>x.period===2||x.period==="2")||ls[1];
+      const val  = r2 ? Number(r2.value??r2.score??NaN) : null;
+      const thru = c.status?.thruHole ?? null;
+      const state= c.status?.type?.state||"pre";
+      const e    = findPlayer(name);
+      if (e) e.group.players[e.idx].live = {
+        r2: isNaN(val)?null:val,
+        thru: thru!==null?Number(thru):null,
+        state
+      };
     });
-  } catch(e) { console.warn("ESPN parse",e); }
+  } catch(err) { console.warn("ESPN",err); }
 }
 
-function parseMasters(data) {
+function parseMasters(data, preferIfFresher=false) {
   try {
-    const players = data.data?.player || data.player || [];
-    players.forEach(p => {
-      const name  = (p.display_name || (p.firstName+" "+p.lastName)).trim();
-      const rounds = p.round || [];
-      const r2obj  = rounds.find(r=>String(r.round_number)==="2") || rounds[1];
-      const r2     = r2obj ? Number(r2obj.strokes||0) - 72 : null;
-      const thru   = Number(p.thru||0)||null;
-      const state  = thru >= 18 ? "post" : thru > 0 ? "in" : "pre";
-      const entry  = findPlayer(name);
-      if (entry) entry.group.players[entry.idx].live = {r2, thru, state};
+    (data.data?.player||data.player||[]).forEach(p => {
+      const name = (p.display_name||(p.firstName+" "+p.lastName)).trim();
+      const r2   = (p.round||[]).find(r=>String(r.round_number)==="2");
+      const val  = r2 ? Number(r2.strokes||0)-72 : null;
+      const thru = Number(p.thru||0)||null;
+      const e    = findPlayer(name);
+      if (!e) return;
+      const existing = e.group.players[e.idx].live;
+      // If preferIfFresher: overwrite if Masters has more holes played, or no existing data
+      if (preferIfFresher && existing && thru !== null && existing.thru !== null) {
+        if (thru < existing.thru) return; // ESPN is further ahead, keep it
+      }
+      e.group.players[e.idx].live = {
+        r2: val, thru,
+        state: thru>=18?"post":thru>0?"in":"pre",
+        src: "masters"
+      };
     });
-  } catch(e) { console.warn("Masters parse",e); }
+  } catch(err) { console.warn("Masters",err); }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// UI RENDERING
-// ═══════════════════════════════════════════════════════════════════════════
+// ── UI ──
 let currentFilter = "all";
 
 function setFilter(f, btn) {
   currentFilter = f;
-  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   applyFilter();
 }
@@ -630,17 +769,15 @@ function setFilter(f, btn) {
 function applyFilter() {
   let shown = 0;
   document.querySelectorAll(".group-card").forEach(card => {
-    const isActive   = card.dataset.state === "active";
-    const isComplete = card.dataset.state === "complete";
-    const isParlay   = card.dataset.parlay === "true";
+    const s = card.dataset.state;
     let show = true;
-    if (currentFilter === "active"   && !isActive)   show = false;
-    if (currentFilter === "complete" && !isComplete)  show = false;
-    if (currentFilter === "parlay"   && !isParlay)    show = false;
-    card.classList.toggle("hidden", !show);
+    if (currentFilter==="active"   && s!=="active")   show=false;
+    if (currentFilter==="complete" && s!=="complete")  show=false;
+    if (currentFilter==="upcoming" && s!=="upcoming")  show=false;
+    card.classList.toggle("hidden",!show);
     if (show) shown++;
   });
-  document.getElementById("group-count").textContent = shown + " groups shown";
+  document.getElementById("group-count").textContent = shown+" groups";
 }
 
 function fmtScore(s) {
@@ -648,56 +785,46 @@ function fmtScore(s) {
   if (s===0) return "E";
   return (s>0?"+":"")+s;
 }
-
-function scoreClass(s) {
-  if (s===null||s===undefined||isNaN(s)) return "";
+function scoreCls(s) {
+  if (!s && s!==0) return "";
   return s<0?"under":s>0?"over":"even";
 }
 
-function groupState(group) {
-  const states = group.players.map(p=>p.live?.state||"pre");
-  if (!group.players.some(p=>p.live)) return "upcoming";
+function groupState(g) {
+  if (!g.players.some(p=>p.live)) return "upcoming";
+  const states = g.players.map(p=>p.live?.state||"pre");
   if (states.every(s=>s==="post")) return "complete";
   if (states.some(s=>s==="in"||s==="post")) return "active";
   return "upcoming";
 }
 
-function getStandings(group) {
-  const with_scores = group.players
-    .map((p,i)=>({i, r2:p.live?.r2??null}))
-    .filter(x=>x.r2!==null);
-  if (!with_scores.length) return {};
-  const min = Math.min(...with_scores.map(x=>x.r2));
-  const result = {};
-  with_scores.forEach(x=>{
-    const leaders = with_scores.filter(s=>s.r2===min);
-    result[x.i] = x.r2===min ? (leaders.length>1?"tie":"win") : "lose";
+function getStandings(g) {
+  const scored = g.players.map((p,i)=>({i,r2:p.live?.r2??null})).filter(x=>x.r2!==null);
+  if (!scored.length) return {};
+  const min = Math.min(...scored.map(x=>x.r2));
+  const res = {};
+  scored.forEach(x => {
+    res[x.i] = x.r2===min ? (scored.filter(s=>s.r2===min).length>1?"tie":"win") : "lose";
   });
-  return result;
+  return res;
 }
 
 function updateUI() {
   const grid = document.getElementById("groups-grid");
   grid.innerHTML = "";
-
   GROUPS.forEach(group => {
     const state     = groupState(group);
     const standings = getStandings(group);
-    const hasParlay = group.players.some(p=>p.parlay);
-
-    const card = document.createElement("div");
-    card.className = "group-card" +
-      (hasParlay     ? " parlay-card" : "") +
-      (state==="active" ? " active-now"  : "");
-    card.dataset.state  = state;
-    card.dataset.parlay = hasParlay;
+    const card      = document.createElement("div");
+    card.className  = "group-card"+(state==="active"?" active-now":"");
+    card.dataset.state = state;
 
     const badgeCls = state==="active"?"badge-active":state==="complete"?"badge-complete":"badge-upcoming";
     const badgeTxt = state==="active"?"LIVE":state==="complete"?"FINAL":"Upcoming";
 
     let html = `
       <div class="card-header">
-        <div class="card-tee">${group.teetime}</div>
+        <span class="card-tee">${group.teetime}</span>
         <span class="card-badge ${badgeCls}">${badgeTxt}</span>
       </div>
       <div class="col-headers">
@@ -707,26 +834,21 @@ function updateUI() {
         <div class="col-hdr">Odds</div>
       </div>`;
 
-    group.players.forEach((p, i) => {
-      const st      = standings[i];
-      const rowCls  = st==="win"?"winning":st==="lose"?"losing":st==="tie"?"tied":"";
-      const dotCls  = st==="win"?"win":st==="lose"?"lose":st==="tie"?"tie":"none";
-      const hasLive = p.live !== undefined;
-      const r2      = hasLive ? p.live.r2 : null;
-      const thru    = hasLive ? p.live.thru : null;
-      const thruTxt = hasLive ? (thru>=18?"F":thru>0?thru:"—") : "—";
-      const r2Txt   = fmtScore(r2);
-      const r2Cls   = scoreClass(r2);
-      const parlayTag = p.parlay ? '<span class="parlay-tag">Parlay</span>' : "";
-
+    group.players.forEach((p,i) => {
+      const st     = standings[i];
+      const rowCls = st==="win"?"winning":st==="lose"?"losing":st==="tie"?"tied":"";
+      const dotCls = st==="win"?"win":st==="lose"?"lose":st==="tie"?"tie":"none";
+      const hasL   = p.live!==undefined;
+      const r2     = hasL?p.live.r2:null;
+      const thru   = hasL?p.live.thru:null;
+      const thruTxt= hasL?(thru>=18?"F":thru>0?thru:"—"):"—";
       html += `
         <div class="player-row ${rowCls}">
           <div class="player-info">
             <span class="lead-indicator ${dotCls}"></span>
-            <span class="player-name ${p.parlay?'parlay-name':''}">${p.name}</span>
-            ${parlayTag}
+            <span class="player-name">${p.name}</span>
           </div>
-          <div class="score-cell ${r2Cls}">${r2Txt}</div>
+          <div class="score-cell ${scoreCls(r2)}">${fmtScore(r2)}</div>
           <div class="thru-cell">${thruTxt}</div>
           <div class="odds-cell">${p.odds||"—"}</div>
         </div>`;
@@ -735,53 +857,31 @@ function updateUI() {
     card.innerHTML = html;
     grid.appendChild(card);
   });
-
-  buildParlayBar();
   applyFilter();
 }
 
-function buildParlayBar() {
-  const container = document.getElementById("parlay-chips");
-  container.innerHTML = "";
-  GROUPS.forEach(g => {
-    const p = g.players.find(pl=>pl.parlay);
-    if (!p) return;
-    const r2  = p.live?.r2 ?? null;
-    const thru= p.live?.thru ?? null;
-    const r2Cls = r2===null?"even":r2<0?"under":r2>0?"over":"even";
-    const r2Txt = r2!==null ? fmtScore(r2) : "";
-    const thruTxt = thru!==null?(thru>=18?" (F)":(thru>0?` (${thru})`:"")):"";
-    const chip = document.createElement("div");
-    chip.className = "parlay-chip";
-    chip.innerHTML = `${p.name} <span class="p-odds">${p.odds}</span>${r2Txt?`<span class="p-r2 ${r2Cls}">${r2Txt}</span>`:""}${thruTxt?`<span style="font-size:9px;color:#aaa">${thruTxt}</span>`:""}`;
-    container.appendChild(chip);
-  });
-}
-
-function setStatus(state) {
+function setStatus(state, espnOk=false, mastersOk=false) {
   const dot  = document.getElementById("status-dot");
   const text = document.getElementById("status-text");
   if (state==="live") {
-    dot.className = "status-dot live";
+    dot.className  = "status-dot live";
     const active   = GROUPS.filter(g=>groupState(g)==="active").length;
     const complete = GROUPS.filter(g=>groupState(g)==="complete").length;
-    text.textContent = `Live  |  ${active} active  |  ${complete} complete`;
+    const src = espnOk && mastersOk ? "ESPN + Masters.com" : mastersOk ? "Masters.com" : "ESPN";
+    text.textContent = `Live (${src})  ·  ${active} active  ·  ${complete} complete`;
   } else {
-    dot.className = "status-dot";
-    text.textContent = "Offline — retrying...";
+    dot.className  = "status-dot";
+    text.textContent = "Offline — will retry automatically";
   }
 }
 
-function showLoading(v) { document.getElementById("loading-overlay").style.display = v?"flex":"none"; }
+function showLoading(v) { document.getElementById("loading-overlay").style.display=v?"flex":"none"; }
 function showError(msg) { const b=document.getElementById("error-banner"); b.textContent=msg; b.style.display="block"; }
 function clearError()   { document.getElementById("error-banner").style.display="none"; }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// AUTO REFRESH
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Auto refresh ──
 const REFRESH_SEC = 60;
-let countdownVal  = REFRESH_SEC;
-let timer;
+let countdownVal = REFRESH_SEC, timer;
 
 function resetCountdown() {
   clearInterval(timer);
@@ -793,9 +893,6 @@ function resetCountdown() {
   }, 1000);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════════════════
 updateUI();
 fetchScores();
 </script>
