@@ -786,43 +786,26 @@ function updateTicker() {
 }
 
 // ── Data fetch ──
-const ESPN_URL    = "https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard";
-const MASTERS_URL = "https://www.masters.com/en_US/scores/feeds/2026/scores.json";
+const ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard";
+let firstLoad = true;
 
-// Fetch from both sources in parallel; merge results (Masters.com wins ties on thru-hole recency)
 async function fetchScores() {
-  showLoading(true);
+  if (firstLoad) showLoading(true);
   clearError();
-  let espnOk = false, mastersOk = false;
 
-  const [espnResult, mastersResult] = await Promise.allSettled([
-    fetch(ESPN_URL,    {cache:"no-store"}).then(r=>{ if(!r.ok) throw new Error("ESPN "+r.status);    return r.json(); }),
-    fetch(MASTERS_URL, {cache:"no-store"}).then(r=>{ if(!r.ok) throw new Error("Masters "+r.status); return r.json(); })
-  ]);
-
-  // Apply ESPN first (baseline)
-  if (espnResult.status === "fulfilled") {
-    parseESPN(espnResult.value);
-    espnOk = true;
-  }
-
-  // Apply Masters.com on top — overwrites player data only if Masters has equal or more holes played
-  if (mastersResult.status === "fulfilled") {
-    parseMasters(mastersResult.value, /*preferIfFresher=*/true);
-    mastersOk = true;
-  }
-
-  const ok = espnOk || mastersOk;
-  if (!ok) {
-    showError("Could not reach live scoring — scores will update when connection is restored.");
+  try {
+    const r = await fetch(ESPN_URL, {cache:"no-store"});
+    if (!r.ok) throw new Error("ESPN " + r.status);
+    parseESPN(await r.json());
+    setStatus("live");
+  } catch(e) {
+    showError("Could not reach ESPN — will retry automatically.");
     setStatus("offline");
-  } else {
-    setStatus("live", espnOk, mastersOk);
   }
 
   checkScoringEvents();
   updateUI();
-  showLoading(false);
+  if (firstLoad) { showLoading(false); firstLoad = false; }
   document.getElementById("update-time").textContent =
     new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
   resetCountdown();
@@ -1070,15 +1053,14 @@ function updateUI() {
   applyFilter();
 }
 
-function setStatus(state, espnOk=false, mastersOk=false) {
+function setStatus(state) {
   const dot  = document.getElementById("status-dot");
   const text = document.getElementById("status-text");
   if (state==="live") {
     dot.className  = "status-dot live";
     const active   = GROUPS.filter(g=>groupState(g)==="active").length;
     const complete = GROUPS.filter(g=>groupState(g)==="complete").length;
-    const src = espnOk && mastersOk ? "ESPN + Masters.com" : mastersOk ? "Masters.com" : "ESPN";
-    text.textContent = `Live (${src})  ·  ${active} active  ·  ${complete} complete`;
+    text.textContent = `Live · ${active} active · ${complete} complete`;
   } else {
     dot.className  = "status-dot";
     text.textContent = "Offline — will retry automatically";
