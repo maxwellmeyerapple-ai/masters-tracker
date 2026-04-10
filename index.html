@@ -483,24 +483,26 @@
   </div>
 
   <div class="fun-bar">
-    <span class="fun-bar-label">Augusta</span>
-    <div class="fun-ticker">
-      <span>Azaleas in full bloom at Amen Corner</span>
-      <span>Pimento Cheese Sandwich — $1.50</span>
-      <span>Masters tradition since 1934</span>
-      <span>Egg Salad Sandwich — $1.50</span>
-      <span>Par 72 — 7,510 yards</span>
-      <span>Ike's Pond on the Par 3 course</span>
-      <span>Butler Cabin green jacket ceremony</span>
-      <span>18 holes of pure Augusta magic</span>
-      <span>Azaleas in full bloom at Amen Corner</span>
-      <span>Pimento Cheese Sandwich — $1.50</span>
-      <span>Masters tradition since 1934</span>
-      <span>Egg Salad Sandwich — $1.50</span>
-      <span>Par 72 — 7,510 yards</span>
-      <span>Ike's Pond on the Par 3 course</span>
-      <span>Butler Cabin green jacket ceremony</span>
-      <span>18 holes of pure Augusta magic</span>
+    <span class="fun-bar-label" id="ticker-label">Augusta</span>
+    <div style="overflow:hidden;flex:1;white-space:nowrap;">
+      <div class="fun-ticker" id="live-ticker">
+        <span>Azaleas in full bloom at Amen Corner</span>
+        <span>Pimento Cheese Sandwich — $1.50</span>
+        <span>Masters tradition since 1934</span>
+        <span>Egg Salad Sandwich — $1.50</span>
+        <span>Par 72 — 7,510 yards</span>
+        <span>Ike's Pond on the Par 3 course</span>
+        <span>Butler Cabin green jacket ceremony</span>
+        <span>18 holes of pure Augusta magic</span>
+        <span>Azaleas in full bloom at Amen Corner</span>
+        <span>Pimento Cheese Sandwich — $1.50</span>
+        <span>Masters tradition since 1934</span>
+        <span>Egg Salad Sandwich — $1.50</span>
+        <span>Par 72 — 7,510 yards</span>
+        <span>Ike's Pond on the Par 3 course</span>
+        <span>Butler Cabin green jacket ceremony</span>
+        <span>18 holes of pure Augusta magic</span>
+      </div>
     </div>
   </div>
 </header>
@@ -699,6 +701,68 @@ function findPlayer(name) {
   return key ? playerLookup[key] : null;
 }
 
+// ── Live birdie/eagle ticker ──
+const FALLBACK_FACTS = [
+  "Azaleas in full bloom at Amen Corner",
+  "Pimento Cheese Sandwich — $1.50",
+  "Masters tradition since 1934",
+  "Egg Salad Sandwich — $1.50",
+  "Par 72 — 7,510 yards",
+  "Ike's Pond on the Par 3 course",
+  "Butler Cabin green jacket ceremony",
+  "18 holes of pure Augusta magic",
+];
+
+// Store previous scores to detect changes: { "Player Name": r2score }
+const prevScores = {};
+// Rolling log of scoring events, newest first
+const scoringEvents = [];
+
+function checkScoringEvents() {
+  GROUPS.forEach(g => {
+    g.players.forEach(p => {
+      if (!p.live || p.live.r2 === null) return;
+      const key = p.name;
+      const curr = p.live.r2;
+      if (prevScores[key] !== undefined) {
+        const delta = curr - prevScores[key]; // negative = score improved
+        if (delta <= -1) {
+          const label = delta === -1 ? "Birdie" : delta === -2 ? "Eagle" : "Albatross";
+          const thru = p.live.thru;
+          const holeStr = thru ? " at " + thru : "";
+          scoringEvents.unshift(`${p.name} ${label}${holeStr}`);
+          if (scoringEvents.length > 30) scoringEvents.pop();
+        }
+      }
+      prevScores[key] = curr;
+    });
+  });
+  updateTicker();
+}
+
+function updateTicker() {
+  const ticker = document.getElementById("live-ticker");
+  const label  = document.getElementById("ticker-label");
+  if (!ticker) return;
+
+  let items;
+  if (scoringEvents.length > 0) {
+    label.textContent = "Live";
+    // Duplicate for seamless loop
+    items = [...scoringEvents, ...scoringEvents];
+  } else {
+    label.textContent = "Augusta";
+    items = [...FALLBACK_FACTS, ...FALLBACK_FACTS];
+  }
+
+  ticker.innerHTML = items.map(t => `<span>${t}</span>`).join("");
+  // Reset animation
+  ticker.style.animation = "none";
+  ticker.offsetHeight; // reflow
+  const duration = Math.max(20, items.length * 3);
+  ticker.style.animation = `ticker ${duration}s linear infinite`;
+}
+
 // ── Data fetch ──
 const ESPN_URL    = "https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?event=401811941";
 const MASTERS_URL = "https://www.masters.com/en_US/scores/feeds/2026/scores.json";
@@ -734,6 +798,7 @@ async function fetchScores() {
     setStatus("live", espnOk, mastersOk);
   }
 
+  checkScoringEvents();
   updateUI();
   showLoading(false);
   document.getElementById("update-time").textContent =
