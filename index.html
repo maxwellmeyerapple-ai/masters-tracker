@@ -874,12 +874,14 @@ function parseMasters(data, preferIfFresher=false) {
       const r2   = (p.round||[]).find(r=>String(r.round_number)==="2");
       const val  = r2 ? Number(r2.strokes||0)-72 : null;
       const thru = Number(p.thru||0)||null;
-      const e    = findPlayer(name);
+      // If Masters has no R2 data at all, don't overwrite ESPN data
+      if (val === null && thru === null) return;
+      const e = findPlayer(name);
       if (!e) return;
       const existing = e.group.players[e.idx].live;
-      // If preferIfFresher: overwrite if Masters has more holes played, or no existing data
-      if (preferIfFresher && existing && thru !== null && existing.thru !== null) {
-        if (thru < existing.thru) return; // ESPN is further ahead, keep it
+      // Only overwrite ESPN if Masters has equal or more holes played
+      if (preferIfFresher && existing && existing.thru !== null) {
+        if ((thru ?? 0) < existing.thru) return;
       }
       e.group.players[e.idx].live = {
         r2: val, thru,
