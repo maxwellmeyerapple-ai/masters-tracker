@@ -4,55 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Masters 2026 - 3 Ball Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green:       #1a6b3c;
-    --green-mid:   #2d9458;
-    --green-light: #d4edda;
-    --azalea:      #f72585;
-    --azalea-light:#fce4ec;
-    --gold:        #f9c74f;
-    --gold-dark:   #c9922a;
-    --cream:       #fffdf0;
-    --card-bg:     #ffffff;
-    --red:         #e63946;
-    --blue:        #1d6fa4;
-    --grey:        #555;
-    --shadow:      4px 4px 0px rgba(0,0,0,0.15);
+    --augusta-green: #1a5c35;
+    --augusta-mid:   #1e6b3e;
+    --board-cream:   #f5f0e8;
+    --board-white:   #faf8f3;
+    --header-green:  #174d2d;
+    --red:           #cc0000;
+    --black:         #1a1a1a;
+    --grey-dark:     #444;
+    --grey-mid:      #888;
+    --grey-light:    #d8d4cc;
+    --gold:          #c9a84c;
+    --gold-light:    #e8d49a;
+    --active-green:  #2e7d4f;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--cream);
+    font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+    background: #2a5a3a;
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(247,37,133,0.06) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(26,107,60,0.08) 0%, transparent 40%);
+      repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+      );
     min-height: 100vh;
-    color: #333;
+    color: var(--black);
   }
-
-  /* ── Azalea SVG inline ── */
-  .azalea {
-    display: inline-block;
-    width: 52px; height: 52px;
-    flex-shrink: 0;
-  }
-  .azalea-sm { width: 32px; height: 32px; }
 
   /* ── Header ── */
   header {
-    background: linear-gradient(160deg, #1a5c35 0%, #2d9458 60%, #1a5c35 100%);
-    padding: 0;
+    background: var(--header-green);
+    border-bottom: 3px solid var(--gold);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 4px 0px var(--gold), 0 6px 16px rgba(0,0,0,0.25);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
   }
 
   .header-main {
+    max-width: 1340px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -61,312 +57,343 @@
     flex-wrap: wrap;
   }
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .header-center {
+    text-align: center;
+    flex: 1;
   }
 
-  .header-titles { line-height: 1.2; }
-
   .title-main {
-    font-family: 'Fredoka One', cursive;
-    font-size: 22px;
-    color: var(--gold);
-    letter-spacing: 0.5px;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .title-flag {
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: var(--gold);
+    clip-path: polygon(0 0, 100% 30%, 0 60%);
+    margin: 0 8px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
   }
 
   .title-sub {
-    font-size: 11px;
-    color: rgba(255,255,255,0.75);
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 10px;
+    color: var(--gold-light);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 400;
   }
 
   .header-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
+    gap: 3px;
+    min-width: 140px;
   }
 
   .refresh-btn {
-    font-family: 'Fredoka One', cursive;
-    background: var(--gold);
-    color: var(--green);
-    border: none;
-    padding: 6px 18px;
-    border-radius: 20px;
-    font-size: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    background: transparent;
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+    padding: 5px 14px;
     cursor: pointer;
-    box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-    transition: transform 0.1s, box-shadow 0.1s;
-    letter-spacing: 0.3px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: background 0.15s, color 0.15s;
   }
-  .refresh-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+  .refresh-btn:hover { background: var(--gold); color: var(--header-green); }
 
   .timer-text {
     font-size: 10px;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.5px;
   }
-  #countdown { color: var(--gold); font-weight: 800; }
+  #countdown { color: var(--gold-light); }
 
-  /* ── Fun facts ticker ── */
+  /* ── Ticker ── */
   .fun-bar {
-    background: var(--azalea);
-    color: white;
-    padding: 5px 20px;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+    background: var(--augusta-green);
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold-light);
+    padding: 4px 20px;
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     overflow: hidden;
     white-space: nowrap;
   }
   .fun-bar-label {
-    background: white;
-    color: var(--azalea);
-    padding: 1px 8px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 800;
+    color: var(--gold);
+    font-weight: 700;
     flex-shrink: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    border-right: 1px solid var(--gold);
+    padding-right: 12px;
   }
   .fun-ticker {
     display: inline-flex;
-    gap: 40px;
-    animation: ticker 30s linear infinite;
+    gap: 48px;
+    animation: ticker 40s linear infinite;
+    color: rgba(232,212,154,0.7);
   }
   @keyframes ticker {
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
-  .fun-ticker span::before { content: "· "; }
+  .fun-ticker span::before { content: "· "; color: var(--gold); }
 
-  /* ── Filters ── */
+  /* ── Filter bar ── */
   .filter-bar {
-    background: white;
-    border-bottom: 2px solid var(--green-light);
-    padding: 8px 16px;
+    background: var(--header-green);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 7px 20px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
     position: sticky;
-    top: 108px;
+    top: 86px;
     z-index: 90;
+    max-width: 100%;
   }
   .filter-label {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--grey);
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.5px;
+    margin-right: 4px;
   }
   .filter-btn {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    background: var(--cream);
-    color: var(--grey);
-    border: 2px solid #ddd;
-    padding: 4px 14px;
-    border-radius: 20px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    background: transparent;
+    color: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 3px 12px;
     cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     transition: all 0.15s;
   }
   .filter-btn.active {
-    background: var(--green);
-    color: white;
-    border-color: var(--green);
+    background: var(--gold);
+    color: var(--header-green);
+    border-color: var(--gold);
   }
 
   /* ── Status bar ── */
   .status-bar {
+    max-width: 1340px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 16px 4px;
-    font-size: 12px;
-    color: var(--grey);
-    font-weight: 600;
+    padding: 6px 4px 4px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+    letter-spacing: 0.5px;
     flex-wrap: wrap;
     gap: 4px;
   }
   .status-dot {
-    width: 9px; height: 9px;
+    width: 7px; height: 7px;
     border-radius: 50%;
-    background: #bbb;
+    background: #555;
     display: inline-block;
     margin-right: 5px;
   }
-  .status-dot.live { background: #4caf50; animation: pulse 1.5s infinite; }
+  .status-dot.live { background: #5cb85c; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  /* ── Main grid ── */
-  main { max-width: 1300px; margin: 0 auto; padding: 12px 14px 40px; }
+  /* ── Main ── */
+  main {
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 10px 10px 50px;
+  }
 
   .groups-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
   }
 
-  /* ── Cards ── */
+  /* ── Cards — Augusta scoreboard style ── */
   .group-card {
-    background: var(--card-bg);
-    border-radius: 18px;
-    box-shadow: var(--shadow);
+    background: var(--board-cream);
+    border: 1px solid #c8c0ae;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
     overflow: hidden;
-    border: 2.5px solid #e0e0e0;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: box-shadow 0.15s;
   }
   .group-card:hover {
-    transform: translateY(-3px) rotate(-0.3deg);
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.6);
   }
-  .group-card.active-now  {
-    border-color: #4caf50;
-    box-shadow: 4px 4px 0px rgba(76,175,80,0.3);
+  .group-card.active-now {
+    border-color: var(--active-green);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25), 0 0 0 2px rgba(46,125,79,0.4), inset 0 1px 0 rgba(255,255,255,0.6);
   }
   .group-card.hidden { display: none; }
 
-  /* Alternating card header colors */
+  /* Card header — always Augusta green */
   .card-header {
-    padding: 8px 14px;
+    background: var(--augusta-green);
+    padding: 7px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: white;
+    border-bottom: 2px solid var(--gold);
   }
-  .group-card:nth-child(6n+1) .card-header { background: var(--green); }
-  .group-card:nth-child(6n+2) .card-header { background: #1d6fa4; }
-  .group-card:nth-child(6n+3) .card-header { background: #7b2d8b; }
-  .group-card:nth-child(6n+4) .card-header { background: #c05621; }
-  .group-card:nth-child(6n+5) .card-header { background: #b5272c; }
-  .group-card:nth-child(6n+6) .card-header { background: #2d6a8a; }
 
   .card-tee {
-    font-family: 'Fredoka One', cursive;
-    font-size: 15px;
-    letter-spacing: 0.3px;
-  }
-  .card-badge {
-    font-size: 10px;
-    font-weight: 800;
-    padding: 2px 9px;
-    border-radius: 12px;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 13px;
+    color: white;
     letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+
+  .card-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
   }
-  .badge-upcoming  { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
-  .badge-active    { background: #4caf50; color: white; }
-  .badge-complete  { background: var(--gold); color: var(--green); }
+  .badge-upcoming { color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
+  .badge-active   { color: #5cb85c; border: 1px solid #5cb85c; }
+  .badge-complete { color: var(--gold); border: 1px solid var(--gold); }
 
+  /* Column headers */
   .col-headers {
     display: grid;
-    grid-template-columns: 1fr 48px 46px 52px;
-    padding: 4px 14px;
-    background: #f9f9f9;
-    border-bottom: 1px solid #eee;
+    grid-template-columns: 1fr 44px 42px 52px;
+    padding: 4px 12px;
+    background: #e8e2d6;
+    border-bottom: 1px solid var(--grey-light);
   }
   .col-hdr {
-    font-size: 9px;
-    font-weight: 800;
+    font-size: 8.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: #999;
+    letter-spacing: 1px;
+    color: var(--grey-mid);
     text-align: center;
   }
   .col-hdr:first-child { text-align: left; }
 
+  /* Player rows */
   .player-row {
     display: grid;
-    grid-template-columns: 1fr 48px 46px 52px;
+    grid-template-columns: 1fr 44px 42px 52px;
     align-items: center;
-    padding: 9px 14px;
-    border-bottom: 1px dashed #f0f0f0;
-    transition: background 0.2s;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0dbd0;
+    transition: background 0.15s;
   }
   .player-row:last-child { border-bottom: none; }
-  .player-row.winning { background: #f0fdf4; }
-  .player-row.losing  { background: #fafafa; }
-  .player-row.tied    { background: #fffbeb; }
+  .player-row.winning { background: #eef5ee; }
+  .player-row.losing  { background: var(--board-cream); }
+  .player-row.tied    { background: #f5f0e0; }
 
-  .player-info { display: flex; align-items: center; gap: 8px; }
+  .player-info { display: flex; align-items: center; gap: 7px; }
 
-  .lead-indicator {
-    width: 11px; height: 11px;
-    border-radius: 50%;
+  /* Lead bar — left edge colored stripe instead of dot */
+  .lead-bar {
+    width: 3px;
+    height: 28px;
     flex-shrink: 0;
-    border: 2px solid transparent;
+    border-radius: 2px;
+    background: #d0c8b8;
   }
-  .lead-indicator.win  { background: #4caf50; border-color: #2e7d32; }
-  .lead-indicator.lose { background: #ef5350; border-color: #c62828; }
-  .lead-indicator.tie  { background: var(--gold); border-color: var(--gold-dark); }
-  .lead-indicator.none { background: #e0e0e0; border-color: #ccc; }
+  .lead-bar.win  { background: var(--active-green); }
+  .lead-bar.lose { background: #bbb; }
+  .lead-bar.tie  { background: var(--gold); }
 
   .player-name {
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: 0.2px;
     line-height: 1.2;
   }
+  .player-row.winning .player-name {
+    font-weight: 700;
+  }
 
+  /* Score cell — red for under, black for even/over, matches Masters.com */
   .score-cell {
     text-align: center;
-    font-family: 'Fredoka One', cursive;
-    font-size: 16px;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--black);
   }
   .score-cell.under { color: var(--red); }
-  .score-cell.over  { color: var(--blue); }
-  .score-cell.even  { color: #333; }
+  .score-cell.over  { color: var(--black); }
+  .score-cell.even  { color: var(--black); }
 
   .thru-cell {
     text-align: center;
     font-size: 11px;
-    color: #999;
-    font-weight: 700;
+    color: var(--grey-mid);
+    font-weight: 600;
+    letter-spacing: 0.3px;
   }
   .odds-cell {
     text-align: center;
-    font-size: 11px;
-    color: #777;
+    font-size: 10.5px;
+    color: var(--grey-dark);
     font-weight: 600;
+    letter-spacing: 0.2px;
   }
 
   /* ── Error / Loading ── */
   #error-banner {
     display: none;
-    background: var(--azalea-light);
-    color: var(--azalea);
-    border: 2px solid var(--azalea);
-    border-radius: 12px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
     padding: 8px 14px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: 0.3px;
   }
 
   #loading-overlay {
     position: fixed; inset: 0;
-    background: rgba(26,92,53,0.9);
+    background: rgba(23,77,45,0.95);
     display: flex; align-items: center; justify-content: center;
     z-index: 200; flex-direction: column; gap: 16px; color: white;
   }
   .loader-text {
-    font-family: 'Fredoka One', cursive;
-    font-size: 22px;
-    color: var(--gold);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 20px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
-  .loader-sub { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 600; }
+  .loader-sub { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
   .spinner {
-    width: 40px; height: 40px;
-    border: 4px solid rgba(255,255,255,0.2);
+    width: 36px; height: 36px;
+    border: 3px solid rgba(255,255,255,0.15);
     border-top-color: var(--gold);
     border-radius: 50%;
     animation: spin 0.9s linear infinite;
@@ -377,16 +404,18 @@
   footer {
     text-align: center;
     padding: 20px;
-    color: #aaa;
-    font-size: 11px;
-    font-weight: 600;
+    color: rgba(255,255,255,0.25);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
 
   /* ── Mobile ── */
   @media (max-width: 500px) {
     .groups-grid { grid-template-columns: 1fr; }
-    .title-main  { font-size: 18px; }
-    .fun-bar     { font-size: 10.5px; }
+    .title-main  { font-size: 15px; letter-spacing: 1px; }
+    .fun-bar     { font-size: 9.5px; }
+    .filter-bar  { top: 80px; }
   }
 </style>
 </head>
@@ -398,48 +427,25 @@
   <div class="loader-sub">Loading live scores from the course</div>
 </div>
 
-<!-- ── AZALEA SVG TEMPLATE ── -->
-<svg style="display:none">
-  <symbol id="azalea-icon" viewBox="0 0 100 100">
-    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9"/>
-    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(72 50 50)"/>
-    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(144 50 50)"/>
-    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(216 50 50)"/>
-    <ellipse cx="50" cy="22" rx="13" ry="24" fill="#f72585" opacity="0.9" transform="rotate(288 50 50)"/>
-    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6"/>
-    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(72 50 50)"/>
-    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(144 50 50)"/>
-    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(216 50 50)"/>
-    <ellipse cx="50" cy="22" rx="8"  ry="20" fill="#ff85c1" opacity="0.6" transform="rotate(288 50 50)"/>
-    <circle cx="50" cy="50" r="11" fill="#f9c74f"/>
-    <circle cx="50" cy="50" r="6"  fill="#f4a21f"/>
-  </symbol>
-  <symbol id="sandwich-icon" viewBox="0 0 100 100">
-    <!-- bread top -->
-    <ellipse cx="50" cy="28" rx="38" ry="14" fill="#e8a854"/>
-    <ellipse cx="50" cy="22" rx="38" ry="10" fill="#f5c26b"/>
-    <!-- filling -->
-    <rect x="14" y="38" width="72" height="10" rx="4" fill="#e05c3a"/>
-    <rect x="14" y="46" width="72" height="6" rx="3" fill="#c0392b"/>
-    <!-- bread bottom -->
-    <ellipse cx="50" cy="58" rx="38" ry="12" fill="#e8a854"/>
-    <ellipse cx="50" cy="62" rx="38" ry="8" fill="#d4913c"/>
-  </symbol>
-</svg>
-
 <header>
   <div class="header-main">
-    <div class="header-left">
-      <svg class="azalea" aria-hidden="true"><use href="#azalea-icon"/></svg>
-      <div class="header-titles">
-        <div class="title-main">Masters 2026 — 3-Ball Tracker</div>
-        <div class="title-sub">Augusta National Golf Club &nbsp;·&nbsp; Round 2 &nbsp;·&nbsp; Friday April 10</div>
+    <div style="min-width:140px;">
+      <div class="status-bar" style="padding:0; color:rgba(255,255,255,0.4);">
+        <div><span class="status-dot" id="status-dot"></span><span id="status-text">Loading...</span></div>
+        <div id="group-count"></div>
       </div>
-      <svg class="azalea" aria-hidden="true"><use href="#azalea-icon"/></svg>
+    </div>
+    <div class="header-center">
+      <div class="title-main">
+        <span class="title-flag"></span>
+        Masters 2026 &mdash; 3-Ball Tracker
+        <span class="title-flag"></span>
+      </div>
+      <div class="title-sub">Augusta National &nbsp;&bull;&nbsp; Round 2 &nbsp;&bull;&nbsp; Friday, April 11</div>
     </div>
     <div class="header-right">
-      <button class="refresh-btn" onclick="fetchScores()">Refresh Scores</button>
-      <div class="timer-text">Updated: <span id="update-time">—</span> &nbsp;|&nbsp; Next: <span id="countdown">—</span></div>
+      <button class="refresh-btn" onclick="fetchScores()">Refresh Now</button>
+      <div class="timer-text">Updated <span id="update-time">—</span> &nbsp;·&nbsp; Next in <span id="countdown">—</span></div>
     </div>
   </div>
 
@@ -447,55 +453,40 @@
     <span class="fun-bar-label">Augusta</span>
     <div class="fun-ticker">
       <span>Azaleas in full bloom at Amen Corner</span>
-      <span>Pimento Cheese Sandwich · $1.50</span>
+      <span>Pimento Cheese Sandwich — $1.50</span>
       <span>Masters tradition since 1934</span>
-      <span>Egg Salad Sandwich · $1.50</span>
-      <span>Par 72 · 7,510 yards</span>
+      <span>Egg Salad Sandwich — $1.50</span>
+      <span>Par 72 — 7,510 yards</span>
       <span>Ike's Pond on the Par 3 course</span>
-      <span>The famous Butler Cabin green jacket ceremony</span>
+      <span>Butler Cabin green jacket ceremony</span>
+      <span>18 holes of pure Augusta magic</span>
       <span>Azaleas in full bloom at Amen Corner</span>
-      <span>Pimento Cheese Sandwich · $1.50</span>
+      <span>Pimento Cheese Sandwich — $1.50</span>
       <span>Masters tradition since 1934</span>
-      <span>Egg Salad Sandwich · $1.50</span>
-      <span>Par 72 · 7,510 yards</span>
+      <span>Egg Salad Sandwich — $1.50</span>
+      <span>Par 72 — 7,510 yards</span>
       <span>Ike's Pond on the Par 3 course</span>
-      <span>The famous Butler Cabin green jacket ceremony</span>
+      <span>Butler Cabin green jacket ceremony</span>
+      <span>18 holes of pure Augusta magic</span>
     </div>
   </div>
 </header>
 
 <div class="filter-bar">
-  <span class="filter-label">Show:</span>
+  <span class="filter-label">View:</span>
   <button class="filter-btn active" onclick="setFilter('all',this)">All Groups</button>
-  <button class="filter-btn" onclick="setFilter('active',this)">Active Now</button>
-  <button class="filter-btn" onclick="setFilter('complete',this)">Completed</button>
+  <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
+  <button class="filter-btn" onclick="setFilter('complete',this)">Final</button>
   <button class="filter-btn" onclick="setFilter('upcoming',this)">Upcoming</button>
 </div>
 
 <main>
   <div id="error-banner"></div>
-  <div class="status-bar">
-    <div>
-      <span class="status-dot" id="status-dot"></span>
-      <span id="status-text">Loading...</span>
-    </div>
-    <div id="group-count"></div>
-  </div>
   <div class="groups-grid" id="groups-grid"></div>
 </main>
 
 <footer>
-  <svg class="azalea-sm" aria-hidden="true" style="vertical-align:middle"><use href="#azalea-icon"/></svg>
-  &nbsp; Masters 2026 &nbsp;·&nbsp; Live scores via ESPN &nbsp;·&nbsp; Refreshes every 60s &nbsp;
-  <svg class="azalea-sm" aria-hidden="true" style="vertical-align:middle"><use href="#azalea-icon"/></svg>
-  <br><br>
-  <svg width="28" height="20" viewBox="0 0 100 70" style="vertical-align:middle;opacity:0.4">
-    <use href="#sandwich-icon" width="100" height="100" y="-15"/>
-  </svg>
-  &nbsp;Don't forget your pimento cheese sandwich&nbsp;
-  <svg width="28" height="20" viewBox="0 0 100 70" style="vertical-align:middle;opacity:0.4">
-    <use href="#sandwich-icon" width="100" height="100" y="-15"/>
-  </svg>
+  Masters 2026 &nbsp;&bull;&nbsp; Live scores via ESPN + Masters.com &nbsp;&bull;&nbsp; Auto-refreshes every 60s
 </footer>
 
 <script>
@@ -829,7 +820,7 @@ function updateUI() {
       </div>
       <div class="col-headers">
         <div class="col-hdr">Player</div>
-        <div class="col-hdr">R2</div>
+        <div class="col-hdr">Today</div>
         <div class="col-hdr">Thru</div>
         <div class="col-hdr">Odds</div>
       </div>`;
@@ -837,7 +828,7 @@ function updateUI() {
     group.players.forEach((p,i) => {
       const st     = standings[i];
       const rowCls = st==="win"?"winning":st==="lose"?"losing":st==="tie"?"tied":"";
-      const dotCls = st==="win"?"win":st==="lose"?"lose":st==="tie"?"tie":"none";
+      const barCls = st==="win"?"win":st==="lose"?"lose":st==="tie"?"tie":"";
       const hasL   = p.live!==undefined;
       const r2     = hasL?p.live.r2:null;
       const thru   = hasL?p.live.thru:null;
@@ -845,7 +836,7 @@ function updateUI() {
       html += `
         <div class="player-row ${rowCls}">
           <div class="player-info">
-            <span class="lead-indicator ${dotCls}"></span>
+            <span class="lead-bar ${barCls}"></span>
             <span class="player-name">${p.name}</span>
           </div>
           <div class="score-cell ${scoreCls(r2)}">${fmtScore(r2)}</div>
