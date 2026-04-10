@@ -843,8 +843,7 @@ function parseESPN(data) {
         if (disp === "E") val = 0;
         else val = parseInt(disp, 10);
       }
-      // thruHole comes back null from ESPN bulk feed; use outScore holes as proxy if available
-      const thru  = c.status?.thruHole ?? r2?.outScore ?? null;
+      const thru  = c.status?.thru ?? null;
       const state = c.status?.type?.state||"pre";
       const e     = findPlayer(name);
       if (e) e.group.players[e.idx].live = {
