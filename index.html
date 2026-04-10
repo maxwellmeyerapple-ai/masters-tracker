@@ -876,7 +876,7 @@ function applyFilter() {
 
 function fmtScore(s) {
   if (s===null||s===undefined||isNaN(s)) return "—";
-  if (s===0) return "E";
+  if (s===0) return "—";
   return (s>0?"+":"")+s;
 }
 function scoreCls(s) {
