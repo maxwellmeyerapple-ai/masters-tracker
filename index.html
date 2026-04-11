@@ -535,7 +535,7 @@ const GROUPS = [
     {name:"Alex Noren",     r1:-1, odds:"+100"},
   ]},
   { teetime:"9:42 AM", id:"g2", players:[
-    {name:"Nicolai Hojgaard", r1:-2, odds:"-150"},
+    {name:"Rasmus Hojgaard", r1:-2, odds:"-150"},
     {name:"Charl Schwartzel", r1:+1, odds:"+110"},
   ]},
   { teetime:"9:53 AM", id:"g3", players:[
@@ -657,19 +657,28 @@ function findPlayer(name) {
   const norm = normName(name);
   // 1. Exact match
   if (playerLookup[norm]) return playerLookup[norm];
+  // 1b. Reversed word order (handles "Kim Si Woo" → "Si Woo Kim" style Korean names)
+  const reversed = norm.split(" ").reverse().join(" ");
+  if (playerLookup[reversed]) return playerLookup[reversed];
   // 2. Last name exact match
   const parts = norm.split(" ");
   const last = parts[parts.length - 1];
   const byLast = Object.keys(playerLookup).find(k => k.split(" ").pop() === last);
   if (byLast) return playerLookup[byLast];
-  // 3. First name + last name contained anywhere (handles "T. McKibbin" or "McKibbin, Tom")
+  // 3. Any word in the ESPN name matches the last word in our lookup (catches surname-first formats)
+  const byAnyWord = Object.keys(playerLookup).find(k => {
+    const kLast = k.split(" ").pop();
+    return parts.includes(kLast);
+  });
+  if (byAnyWord) return playerLookup[byAnyWord];
+  // 4. First name + last name contained anywhere (handles "T. McKibbin" or "McKibbin, Tom")
   const first = parts[0];
   const byFirstLast = Object.keys(playerLookup).find(k => {
     const kp = k.split(" ");
     return kp[kp.length-1] === last || (kp[0] === first && kp[kp.length-1].startsWith(last.slice(0,4)));
   });
   if (byFirstLast) return playerLookup[byFirstLast];
-  // 4. Partial last name (>=5 chars) — catches McKibbin vs McKibbin-Smith etc.
+  // 5. Partial last name (>=5 chars) — catches McKibbin vs McKibbin-Smith etc.
   if (last.length >= 5) {
     const byPartial = Object.keys(playerLookup).find(k => k.split(" ").pop().startsWith(last.slice(0,5)));
     if (byPartial) return playerLookup[byPartial];
