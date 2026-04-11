@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masters 2026 - 3 Ball Tracker</title>
+<title>Masters 2026 - Round 3 Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -474,7 +474,7 @@
         Masters 2026 &mdash; 3-Ball Tracker
         <span class="title-flag"></span>
       </div>
-      <div class="title-sub">Augusta National &nbsp;&bull;&nbsp; Round 2 &nbsp;&bull;&nbsp; Friday, April 10</div>
+      <div class="title-sub">Augusta National &nbsp;&bull;&nbsp; Round 3 &nbsp;&bull;&nbsp; Saturday, April 11</div>
     </div>
     <div class="header-right">
       <button class="refresh-btn" onclick="fetchScores()">Refresh Now</button>
@@ -529,158 +529,114 @@
 // GROUP DATA
 // ═══════════════════════════════════════════════════════════════════════════
 const GROUPS = [
-  { teetime:"7:40 AM", id:"g1", players:[
-    {name:"Sam Stevens",   r1:0,  odds:"-110"},
-    {name:"Sungjae Im",    r1:+4, odds:"-120"},
+  // Round 3 two-ball pairings — R2 scores stored as r1 for reference
+  { teetime:"9:31 AM", id:"g1", players:[
+    {name:"Kurt Kitayama",  r1:+7, odds:"-125"},
+    {name:"Alex Noren",     r1:-1, odds:"+100"},
   ]},
-  { teetime:"7:50 AM", id:"g2", players:[
-    {name:"Brian Campbell", r1:-1, odds:"+300"},
-    {name:"Andrew Novak",   r1:+3, odds:"+145"},
-    {name:"Tom McKibbin",   r1:+3, odds:"+145"},
+  { teetime:"9:42 AM", id:"g2", players:[
+    {name:"Nicolai Hojgaard", r1:-2, odds:"-150"},
+    {name:"Charl Schwartzel", r1:+1, odds:"+110"},
   ]},
-  { teetime:"8:02 AM", id:"g3", players:[
-    {name:"Wyndham Clark",  r1:0,  odds:"-220"},
-    {name:"Mike Weir",      r1:+9, odds:"+450"},
-    {name:"Mateo Pulcini",  r1:+9, odds:"+410"},
+  { teetime:"9:53 AM", id:"g3", players:[
+    {name:"Jon Rahm",    r1:-2, odds:"-175"},
+    {name:"Si Woo Kim",  r1:+1, odds:"+137"},
   ]},
-  { teetime:"8:14 AM", id:"g4", players:[
-    {name:"Zach Johnson",     r1:+3, odds:"+250"},
-    {name:"Michael Kim",      r1:+3, odds:"+220"},
-    {name:"Nicolai Hojgaard", r1:+4, odds:"+110"},
+  { teetime:"10:04 AM", id:"g4", players:[
+    {name:"Corey Conners",  r1:+1, odds:"-138"},
+    {name:"Brian Harman",   r1:-3, odds:"+110"},
   ]},
-  { teetime:"8:26 AM", id:"g5", players:[
-    {name:"Ethan Fang",    r1:+2,  odds:"+200"},
-    {name:"Danny Willett", r1:+4,  odds:"+155"},
-    {name:"Davis Riley",   r1:+10, odds:"+190"},
+  { teetime:"10:15 AM", id:"g5", players:[
+    {name:"Maverick McNealy", r1:-2, odds:"-175"},
+    {name:"Sergio Garcia",    r1:+3, odds:"+137"},
   ]},
-  { teetime:"8:38 AM", id:"g6", players:[
-    {name:"Adam Scott",    r1:0,  odds:"+135"},
-    {name:"Daniel Berger", r1:+4, odds:"+220"},
-    {name:"Brian Harman",  r1:+7, odds:"+210"},
+  { teetime:"10:26 AM", id:"g6", players:[
+    {name:"Viktor Hovland",  r1:-1, odds:"-138"},
+    {name:"Keegan Bradley",  r1:+2, odds:"+110"},
   ]},
-  { teetime:"8:50 AM", id:"g7", players:[
-    {name:"Fred Couples",   r1:+6, odds:"+490"},
-    {name:"Min Woo Lee",    r1:+6, odds:"-260"},
-    {name:"Fifa Laopakdee", r1:+8, odds:"+490"},
+  { teetime:"10:37 AM", id:"g7", players:[
+    {name:"Justin Thomas",  r1:+2, odds:"-138"},
+    {name:"Gary Woodland",  r1:+3, odds:"+110"},
   ]},
-  { teetime:"9:02 AM", id:"g8", players:[
-    {name:"Aaron Rai",       r1:-1, odds:"+210"},
-    {name:"Jacob Bridgeman", r1:-1, odds:"+125"},
-    {name:"Sergio Garcia",   r1:0,  odds:"+240"},
+  { teetime:"10:48 AM", id:"g8", players:[
+    {name:"Adam Scott",    r1:+2, odds:"-138"},
+    {name:"Sam Stevens",   r1:+2, odds:"+110"},
   ]},
-  { teetime:"9:19 AM", id:"g9", players:[
-    {name:"Michael Brennan", r1:0,  odds:"+240"},
-    {name:"Harry Hall",      r1:+5, odds:"+165"},
-    {name:"Corey Conners",   r1:+3, odds:"+155"},
+  { teetime:"11:10 AM", id:"g9", players:[
+    {name:"Marco Penge",    r1:-3, odds:"-125"},
+    {name:"Matt McCarty",   r1:+1, odds:"+100"},
   ]},
-  { teetime:"9:31 AM", id:"g10", players:[
-    {name:"Tyrrell Hatton",   r1:+2, odds:"+180"},
-    {name:"J.J. Spaun",       r1:+2, odds:"+190"},
-    {name:"Maverick McNealy", r1:+5, odds:"+180"},
+  { teetime:"11:21 AM", id:"g10", players:[
+    {name:"Jordan Spieth",  r1:+1, odds:"-138"},
+    {name:"Sepp Straka",    r1:0,  odds:"+110"},
   ]},
-  { teetime:"9:43 AM", id:"g11", players:[
-    {name:"Ludvig Aberg",   r1:0,  odds:"+160"},
-    {name:"Chris Gotterup", r1:0,  odds:"+270"},
-    {name:"Jon Rahm",       r1:+6, odds:"+145"},
+  { teetime:"11:32 AM", id:"g11", players:[
+    {name:"Jacob Bridgeman", r1:+2, odds:"-138"},
+    {name:"Aaron Rai",       r1:+2, odds:"+110"},
   ]},
-  { teetime:"9:55 AM", id:"g12", players:[
-    {name:"Justin Rose",   r1:-2, odds:"+165"},
-    {name:"Jordan Spieth", r1:0,  odds:"+180"},
-    {name:"Brooks Koepka", r1:0,  odds:"+200"},
+  { teetime:"11:43 AM", id:"g12", players:[
+    {name:"Patrick Cantlay", r1:-5, odds:"-125"},
+    {name:"Sungjae Im",      r1:-3, odds:"+100"},
   ]},
-  { teetime:"10:07 AM", id:"g13", players:[
-    {name:"Justin Thomas", r1:0,  odds:"+175"},
-    {name:"Sepp Straka",   r1:+1, odds:"+175"},
-    {name:"Ben Griffin",   r1:0,  odds:"+200"},
+  { teetime:"11:54 AM", id:"g13", players:[
+    {name:"Russell Henley",  r1:-1, odds:"-200"},
+    {name:"Dustin Johnson",  r1:-1, odds:"+162"},
   ]},
-  { teetime:"10:19 AM", id:"g14", players:[
-    {name:"Gary Woodland",     r1:-1, odds:"+410"},
-    {name:"Scottie Scheffler", r1:-2, odds:"-125"},
-    {name:"Robert MacIntyre",  r1:+8, odds:"+230"},
+  { teetime:"12:05 PM", id:"g14", players:[
+    {name:"Harris English",  r1:-1, odds:"-120"},
+    {name:"Ryan Gerard",     r1:0,  odds:"-110"},
   ]},
-  { teetime:"10:31 AM", id:"g15", players:[
-    {name:"Harris English", r1:+1, odds:"+200"},
-    {name:"Si Woo Kim",     r1:+3, odds:"+145"},
-    {name:"Marco Penge",    r1:+4, odds:"+210"},
+  { teetime:"12:16 PM", id:"g15", players:[
+    {name:"Scottie Scheffler", r1:+2, odds:"-188"},
+    {name:"Ludvig Aberg",      r1:-2, odds:"+125"},
   ]},
-  { teetime:"10:51 AM", id:"g16", players:[
-    {name:"Haotong Li",   r1:-1, odds:"-112"},
-    {name:"John Keefer",  r1:+4, odds:"-112"},
+  { teetime:"12:38 PM", id:"g16", players:[
+    {name:"Collin Morikawa",  r1:-3, odds:"-300"},
+    {name:"Brian Campbell",   r1:+1, odds:"+200"},
   ]},
-  { teetime:"11:03 AM", id:"g17", players:[
-    {name:"Max Homa",        r1:0,   odds:"+105"},
-    {name:"Carlos Ortiz",    r1:+8,  odds:"+145"},
-    {name:"Naoyuki Kataoka", r1:+12, odds:"+490"},
+  { teetime:"12:49 PM", id:"g17", players:[
+    {name:"Matt Fitzpatrick", r1:-3, odds:"-200"},
+    {name:"Nick Taylor",      r1:0,  odds:"+162"},
   ]},
-  { teetime:"11:15 AM", id:"g18", players:[
-    {name:"Jose Maria Olazabal",       r1:+2,  odds:"+500"},
-    {name:"Rasmus Neergaard-Petersen", r1:+5,  odds:"-110"},
-    {name:"Aldrich Potgieter",         r1:+12, odds:"+145"},
+  { teetime:"1:00 PM", id:"g18", players:[
+    {name:"Hideki Matsuyama", r1:-2, odds:"-225"},
+    {name:"Michael Brennan",  r1:-1, odds:"+162"},
   ]},
-  { teetime:"11:27 AM", id:"g19", players:[
-    {name:"Jackson Herrington", r1:+4, odds:"+330"},
-    {name:"Angel Cabrera",      r1:+7, odds:"+270"},
-    {name:"Sami Valimaki",      r1:+8, odds:"-130"},
+  { teetime:"1:11 PM", id:"g19", players:[
+    {name:"Xander Schauffele", r1:0,  odds:"-163"},
+    {name:"Jake Knapp",        r1:-3, odds:"+125"},
   ]},
-  { teetime:"11:39 AM", id:"g20", players:[
-    {name:"Charl Schwartzel", r1:+3, odds:"+220"},
-    {name:"Ryan Fox",         r1:+5, odds:"+155"},
-    {name:"Max Greyserman",   r1:+7, odds:"+180"},
+  { teetime:"1:22 PM", id:"g20", players:[
+    {name:"Max Homa",    r1:-2, odds:"-110"},
+    {name:"Ben Griffin", r1:-3, odds:"-120"},
   ]},
-  { teetime:"11:51 AM", id:"g21", players:[
-    {name:"Matt McCarty",    r1:0,  odds:"+125"},
-    {name:"Rasmus Hojgaard", r1:+6, odds:"+115"},
-    {name:"Vijay Singh",     r1:+7, odds:"+500"},
+  { teetime:"1:33 PM", id:"g21", players:[
+    {name:"Brooks Koepka",  r1:-3, odds:"-112"},
+    {name:"Chris Gotterup", r1:-3, odds:"-112"},
   ]},
-  { teetime:"12:03 PM", id:"g22", players:[
-    {name:"Kurt Kitayama",     r1:-3, odds:"+145"},
-    {name:"Kristoffer Reitan", r1:0,  odds:"+180"},
-    {name:"Casey Jarvis",      r1:+5, odds:"+230"},
+  { teetime:"1:55 PM", id:"g22", players:[
+    {name:"Cameron Young", r1:-5, odds:"-163"},
+    {name:"Jason Day",     r1:-1, odds:"+125"},
   ]},
-  { teetime:"12:15 PM", id:"g22b", players:[
-    {name:"Nicolas Echavarria", r1:+7, odds:"+110"},
-    {name:"Bubba Watson",       r1:+4, odds:"+125"},
-    {name:"Brandon Holtz",      r1:+9, odds:"+550"},
+  { teetime:"2:06 PM", id:"g23", players:[
+    {name:"Kristoffer Reitan", r1:-4, odds:"-138"},
+    {name:"Haotong Li",        r1:-3, odds:"+110"},
   ]},
-  { teetime:"12:32 PM", id:"g23", players:[
-    {name:"Sam Burns",     r1:-5, odds:"+170"},
-    {name:"Jake Knapp",    r1:+1, odds:"+165"},
-    {name:"Cameron Smith", r1:+2, odds:"+220"},
+  { teetime:"2:17 PM", id:"g24", players:[
+    {name:"Tyrrell Hatton", r1:-6, odds:"-138"},
+    {name:"Wyndham Clark",  r1:-4, odds:"+110"},
   ]},
-  { teetime:"12:44 PM", id:"g24", players:[
-    {name:"Nick Taylor",    r1:-1, odds:"+190"},
-    {name:"Keegan Bradley", r1:0,  odds:"+175"},
-    {name:"Ryan Gerard",    r1:0,  odds:"+180"},
+  { teetime:"2:28 PM", id:"g25", players:[
+    {name:"Tommy Fleetwood", r1:-4, odds:"-163"},
+    {name:"Shane Lowry",     r1:-3, odds:"+125"},
   ]},
-  { teetime:"12:56 PM", id:"g25", players:[
-    {name:"Shane Lowry",    r1:-2, odds:"+145"},
-    {name:"Jason Day",      r1:-3, odds:"+145"},
-    {name:"Dustin Johnson", r1:+1, odds:"+270"},
+  { teetime:"2:39 PM", id:"g26", players:[
+    {name:"Justin Rose",   r1:-3, odds:"-138"},
+    {name:"Patrick Reed",  r1:-3, odds:"+110"},
   ]},
-  { teetime:"1:08 PM", id:"g26", players:[
-    {name:"Patrick Reed",    r1:-3, odds:"+200"},
-    {name:"Tommy Fleetwood", r1:-1, odds:"+135"},
-    {name:"Akshay Bhatia",   r1:+1, odds:"+220"},
-  ]},
-  { teetime:"1:20 PM", id:"g27", players:[
-    {name:"Xander Schauffele", r1:-2, odds:"+145"},
-    {name:"Matt Fitzpatrick",  r1:+2, odds:"+210"},
-    {name:"Bryson DeChambeau", r1:+4, odds:"+190"},
-  ]},
-  { teetime:"1:32 PM", id:"g28", players:[
-    {name:"Russell Henley",   r1:+1, odds:"+190"},
-    {name:"Hideki Matsuyama", r1:0,  odds:"+155"},
-    {name:"Collin Morikawa",  r1:+2, odds:"+210"},
-  ]},
-  { teetime:"1:44 PM", id:"g29", players:[
-    {name:"Rory McIlroy",  r1:-5, odds:"+100"},
-    {name:"Cameron Young", r1:+1, odds:"+125"},
-    {name:"Mason Howell",  r1:+5, odds:"+700"},
-  ]},
-  { teetime:"1:56 PM", id:"g30", players:[
-    {name:"Viktor Hovland",  r1:+3, odds:"+155"},
-    {name:"Patrick Cantlay", r1:+5, odds:"+165"},
-    {name:"Alex Noren",      r1:+5, odds:"+250"},
+  { teetime:"2:50 PM", id:"g27", players:[
+    {name:"Rory McIlroy",  r1:-7, odds:"-163"},
+    {name:"Sam Burns",     r1:-1, odds:"+125"},
   ]},
 ];
 
@@ -834,10 +790,10 @@ function parseESPN(data) {
         }
       }
 
-      // Fallback: R2 linescore displayValue
+      // Fallback: R3 linescore displayValue
       if (val === null) {
         const ls   = c.linescores||[];
-        const r2   = ls.find(x=>x.period===2||x.period==="2")||ls[1];
+        const r2   = ls.find(x=>x.period===3||x.period==="3")||ls[2];
         const disp = r2?.displayValue ?? null;
         if (disp && disp !== "-") {
           val = disp === "E" ? 0 : parseInt(disp, 10);
