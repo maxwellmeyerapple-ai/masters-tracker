@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masters 2026 - Round 3 Tracker</title>
+<title>Masters 2026 - Round 3 Tracker v4</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -789,9 +789,13 @@ function parseESPN(data) {
       const state = c.status?.type?.state||"pre";
       const thru  = c.status?.thru ?? null;
 
-      // Skip players still on R2 — ESPN period 2 means R3 hasn't started for them
+      // Skip players not yet in R3:
+      // - explicit period < 3 means still on R2
+      // - if period is null but state="post" + thru=18, that's a finished R2 (no R3 yet)
       const period = c.status?.period ?? null;
+      const thruNum = thru !== null ? Number(thru) : null;
       if (period !== null && Number(period) < 3) return;
+      if (period === null && state !== "in" && thruNum === 18) return;
 
       // todayDetail = "+1(4)" or "E(9)" or "-3(18)" — score(holes played)
       const today = c.status?.todayDetail ?? c.status?.detail ?? null;
@@ -816,7 +820,7 @@ function parseESPN(data) {
       const e = findPlayer(name);
       if (e) e.group.players[e.idx].live = {
         r2: (val !== null && !isNaN(val)) ? val : null,
-        thru: thru !== null ? Number(thru) : null,
+        thru: thruNum,
         state
       };
     });
